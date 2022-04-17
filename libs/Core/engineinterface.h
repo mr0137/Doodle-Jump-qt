@@ -2,7 +2,7 @@
 #define ENGINEINTERFACE_H
 
 #include "core_global.h"
-#include <kcirclebuffer.h>
+#include <circlebuffer.h>
 #include <engine.h>
 #include <messageanswerdispatcher.h>
 #include <QDataStream>
@@ -18,32 +18,20 @@ class CORE_EXPORT MessageConnector {
     std::function<void(QDataStream &)> callbackOnMsg;
     int messageType;
 public:
-    //!
-    //! \brief Get message type
-    //! \return message type of \a this connector
-    //!
+
     int getMessageType() {return messageType;}
 
-    template <typename TMsg, typename Callable>
-
-    //!
-    //! \brief Connects Callable \p m to particular message from engine
-    //! \param m
-    //!
+    template <typename Msg, typename Callable>
     void connectToMsg(Callable m)
     {
-        messageType = TMsg().getType();
+        messageType = Msg().getType();
         callbackOnMsg = [m](QDataStream & s){
-            TMsg msg;
+            Msg msg;
             msg.deserialize(&s);
             m(msg);
         };
     }
 
-    //!
-    //! \brief Calls callback when message is triggered without using \a callbackOnMsg function
-    //! \param s
-    //!
     void operator()(QDataStream &s) {
         callbackOnMsg(s);
     }
@@ -59,63 +47,31 @@ public:
     EngineInterface();
     ~EngineInterface();
 
-    //!
-    //! \brief Proceeds all incoming messages
-    //!
     void proceed();
 
-    template<class TMsg>
-    //!
-    //! \brief Sends message to internal engine, and bind callback
-    //! \param msg
-    //! \param itemId
-    //! \return MsgAnswerHandler object
-    //!
-    MsgAnswerHandler sendToEngine(TMsg msg, int itemId = -1);
+    template<class Msg>
+    MsgAnswerHandler sendToEngine(Msg msg, int itemId = -1);
 
+    template<class Msg>
+    void installStreamMsg(std::function<void(Msg, int)>);
 
-    template<class TMsg>
-    //!
-    //! \brief Install stream msg that comes from engine
-    //!
-    void installStreamMsg(std::function<void(TMsg, int)>);
-//    TorpedoSampleData getLastDataTorpedo(int piDescriptor);
-//    void getLastDataShip(int piDescriptor, ShipSampleData * shData, ShipControllerSampleData * scData);
-//    SubmarineSampleData getLastDataSubmarine(int piDescriptor);
-    //Wave * getLastData(int type, int piDescriptor);
-    template<class TMsg, class ... TMsgs>
-    //!
-    //! \brief Sends message from engine
-    //! \param msg
-    //! \param msgs
-    //! \param itemId
-    //!
-    void sendFromEngine(TMsg msg, TMsgs ... msgs, int itemId = -1);
+    template<class Msg, class ... Msgs>
+    void sendFromEngine(Msg msg, Msgs ... msgs, int itemId = -1);
 
-    //!
-    //! \brief Sends answer from engine side
-    //! \param msg
-    //! \param header
-    //!
     void _pushAnswerEngineSide(const QByteArray &msg, MessageHeader *header);
 
-    template<typename TMsg, typename Callable>
+    template<typename Msg, typename Callable>
     void addConnection(Callable f) {
 
-        int type = TMsg().getType();
+        int type = Msg().getType();
 
         MessageConnector mConn;
-        mConn.connectToMsg<TMsg>(f);
+        mConn.connectToMsg<Msg>(f);
 
         msgConnections[type].push_back(mConn);
 
     }
 
-    //!
-    //! \brief Run connections that are binded to paricular \a msg
-    //! \param type
-    //! \param s
-    //!
     void runConnections(int type, QDataStream &s) {
         if(msgConnections.find(type) != msgConnections.end()) {
             int pos = s.device()->pos();
@@ -126,11 +82,9 @@ public:
         }
     }
 
-protected:
-
 private:
-    KCircleBuffer<QByteArray> fromEngine;
-    KCircleBuffer<QByteArray> toEngine;
+    CircleBuffer<QByteArray> fromEngine;
+    CircleBuffer<QByteArray> toEngine;
 
     int nextMsgId=0;
     int nextMsgIdEngineSide=0;
@@ -147,16 +101,16 @@ private:
 
 
 
-template<class TMsg, class ... TMsgs>
-void EngineInterface::sendFromEngine(TMsg msg, TMsgs ... msgs, int itemId)
+template<class Msg, class ... Msgs>
+void EngineInterface::sendFromEngine(Msg msg, Msgs ... msgs, int itemId)
 {
     QByteArray data;
     QDataStream s(&data, QIODevice::WriteOnly);
     //write header
     MessageHeader header;
     header.uid = this->nextMsgIdEngineSide++;
-//    qDebug() << TMsg().getType();
-    header.type = TMsg().getType();
+//    qDebug() << Msg().getType();
+    header.type = Msg().getType();
     header.itemId = itemId;
     header.isAnswer = false;
     s << header;
@@ -168,8 +122,8 @@ void EngineInterface::sendFromEngine(TMsg msg, TMsgs ... msgs, int itemId)
     }
 }
 
-template <class TMsg>
-MsgAnswerHandler EngineInterface::sendToEngine(TMsg msg, int itemId)
+template <class Msg>
+MsgAnswerHandler EngineInterface::sendToEngine(Msg msg, int itemId)
 {
     QByteArray data;
     QDataStream s(&data, QIODevice::WriteOnly);
@@ -187,14 +141,14 @@ MsgAnswerHandler EngineInterface::sendToEngine(TMsg msg, int itemId)
     return handler;
 }
 
-template<class TMsg>
-void EngineInterface::installStreamMsg(std::function<void(TMsg, int)> lambda){
+template<class Msg>
+void EngineInterface::installStreamMsg(std::function<void(Msg, int)> lambda){
 
-    auto type = TMsg().getType();
+    auto type = Msg().getType();
 
     auto funcTobeCalled = [lambda](QDataStream &s, int itemId) {
         //call handler
-        TMsg msg;
+        Msg msg;
         msg.deserialize(&s);
         lambda(msg, itemId);
         return msg.getType();

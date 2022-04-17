@@ -4,28 +4,34 @@
 #include <messagebase.h>
 #include <pluginsbase_global.h>
 
-struct PLUGINSBASE_EXPORT ChangeCoordsMsg : MessageBase {
-    private: inline static int m_type = 7;\
-    public: int getType() const override {return m_type;}\
-    static bool checkType(int type) {return type == m_type;}\
-    static bool checkType(MessageBase *msg) {return msg->getType() == m_type;}
+struct PLUGINSBASE_EXPORT ChangeCoordsMsg : MessageBase
+{
+    static bool checkType(int type) { return type == m_type; }
+    static bool checkType(MessageBase *msg) { return msg->getType() == m_type; }
+    int getType() const override { return m_type; }
+    void serialize(QDataStream *) const override;
+    void deserialize(QDataStream *) override;
+
     double x;
     double y;
-    double z;
     int m_uid;
-    void serialize(QDataStream *) const override;
-    void deserialize(QDataStream *) override;
+private:
+    static inline int m_type = 7;
 };
 
-struct PLUGINSBASE_EXPORT ChangeCoordsMsgAns : MessageBase {
-    private: inline static int m_type = 8;\
-    public: int getType() const override {return m_type;}\
-    static bool checkType(int type) {return type == m_type;}\
-    static bool checkType(MessageBase *msg) {return msg->getType() == m_type;}
-    bool success;
-    int id;
+struct PLUGINSBASE_EXPORT ChangeCoordsMsgAns : MessageBase
+{
+    static bool checkType(int type) { return type == m_type; }
+    static bool checkType(MessageBase *msg) { return msg->getType() == m_type; }
+    int getType() const override { return m_type; }
+
     void serialize(QDataStream *) const override;
     void deserialize(QDataStream *) override;
+
+    bool success;
+    int id;
+private:
+    static inline int m_type = 8;
 };
 
 #endif // CHANGECOORDSMSG_H

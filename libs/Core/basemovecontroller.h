@@ -26,12 +26,9 @@ public:
     void setTheta(double value);
 };
 
-
 double calculateModule(std::vector<double> vec);
 
-
 std::array<double, 3> normalize(std::array<double, 3> & vec);
-
 
 double calcAngle(double angle, double angularVelocity, int dt);
 std::vector<double> normalize(std::vector<double> vec);

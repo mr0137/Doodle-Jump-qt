@@ -1,8 +1,8 @@
 #include "itemsfactory.h"
 
-ItemsFactory::ItemsFactory()
+ItemsFactory::ItemsFactory(const std::map<std::string, std::function<AbstractObjectController*()>> &controllers)
 {
-
+    m_controllersCreator = controllers;
 }
 
 AbstractObjectController *ItemsFactory::createController(std::string cName)

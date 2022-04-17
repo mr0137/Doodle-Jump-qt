@@ -11,17 +11,17 @@ class CORE_EXPORT MessageNegotiator
 {
 public:
     MessageNegotiator();
-    template<class TMsg, class TClass, class TAns>
+    template<class Msg, class TClass, class TAns>
     //!
     //! \brief Registers handler to particular message
     //! \param obj
     //!
-    void registerMsgHandler(TAns (TClass::*m)(TMsg), TClass *obj){
-        int type = TMsg().getType();
+    void registerMsgHandler(TAns (TClass::*m)(Msg), TClass *obj){
+        int type = Msg().getType();
 
         auto funcTobeCalled = [=](MessageHeader* h, QDataStream &s)->QByteArray {
             //call handler
-            TMsg msg;
+            Msg msg;
             msg.deserialize(&s);
             TAns answ = (obj->*m)(msg);
             if (EmptyMessage::checkType(answ.getType())) {

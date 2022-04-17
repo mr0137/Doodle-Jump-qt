@@ -2,25 +2,25 @@
 
 AbstractObjectController::AbstractObjectController()
 {
-    this->mDisp = new MessageNegotiator;
+    m_negotiator = new MessageNegotiator;
 }
 
 AbstractObjectController::~AbstractObjectController()
 {
-    delete this->mDisp;
+    delete m_negotiator;
 }
 
 void AbstractObjectController::setPiId(int value)
 {
-    piId = value;
+    m_id = value;
 }
 
 void AbstractObjectController::setEngine(Engine *value)
 {
-    e = value;
+    m_engine = value;
 }
 
-QByteArray AbstractObjectController::proceedMsg(MessageHeader* h, QDataStream &s)
+QByteArray AbstractObjectController::proceedMsg(MessageHeader* header, QDataStream &stream)
 {
-    return this->mDisp->proceedMsg(h, s);
+    return m_negotiator->proceedMsg(header, stream);
 }

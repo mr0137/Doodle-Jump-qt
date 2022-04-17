@@ -9,11 +9,11 @@
 
 class SceneItemsFactory;
 class ControllerFactory;
-class PLUGINSBASE_EXPORT ISceneItemInterface : public AbstractPluginInterface
+class PLUGINSBASE_EXPORT ISceneItem : public AbstractPluginInterface
 {
 public:
-    ISceneItemInterface();
-    ~ISceneItemInterface();
+    ISceneItem();
+    ~ISceneItem();
     QList<SceneItemsFactory*> getSceneItemsFactories() { return creators; }
     QList<ControllerFactory*> getControllerFactories() { return controllers; }
     template<class T> void createItemFactory();
@@ -28,7 +28,7 @@ private:
 };
 
 template<class T>
-        void ISceneItemInterface::createItemFactory()
+        void ISceneItem::createItemFactory()
 {
     assert (!typeName().isEmpty());
     auto f = new SceneItemsFactory([]()->SceneItem*{ return new T();});
@@ -37,12 +37,12 @@ template<class T>
 }
 
 template<class T>
-        void ISceneItemInterface::createControllerFactory()
+        void ISceneItem::createControllerFactory()
 {
     assert (!typeName().isEmpty());
     auto cf = new ControllerFactory([]()->AbstractObjectController*{ return new T();});
     cf->setObjectName(typeName());
     controllers.push_back(cf);
 }
-Q_DECLARE_INTERFACE(ISceneItemInterface, "ISceneItemInterface")
+Q_DECLARE_INTERFACE(ISceneItem, "ISceneItem")
 #endif // ISCENEITEMINTERFACE_H

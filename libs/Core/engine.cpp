@@ -1,7 +1,5 @@
 #include "engine.h"
 
-//std::mutex Engine::m;
-
 Engine::Engine()
 {
     m_interface = new EngineInterface;
@@ -56,8 +54,6 @@ void Engine::proceed(int uSecond, int dt)
         m_engineTime += 1000; // uSecond
         prevTime_us = uSecond;
     }
-
-
 }
 
 void Engine::insertController(int id, AbstractObjectController * c)

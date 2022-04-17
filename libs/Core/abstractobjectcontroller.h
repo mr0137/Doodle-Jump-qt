@@ -14,18 +14,18 @@ public:
     virtual ~AbstractObjectController();
 
     virtual void proceed(double) = 0;
-    virtual void init(MessageBase * msg, Engine * e) = 0;
+    virtual void init(MessageBase * message, Engine * engine) = 0;
 
-    QByteArray proceedMsg(MessageHeader *h, QDataStream &s);
+    QByteArray proceedMsg(MessageHeader *header, QDataStream &stream);
 
     void setPiId(int value);
-    int getPiId() const { return piId; }
+    int getPiId() const { return m_id; }
     void setEngine(Engine *e);
 
 protected:
-    Engine *e;
-    int piId;
-    MessageNegotiator * mDisp;
+    Engine *m_engine;
+    int m_id;
+    MessageNegotiator *m_negotiator;
 };
 
 #endif // ABSTRACTCONTROLLER_H

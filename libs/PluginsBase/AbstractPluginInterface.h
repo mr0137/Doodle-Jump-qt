@@ -27,15 +27,15 @@ public:
     //!
     virtual ComponentsMap getComponents() = 0;
 
-    template<typename TMsg, typename Callable>
+    template<typename Msg, typename Callable>
     void registerPluginEngineCalback(Engine*, Callable f);
 
 };
 
-template<typename TMsg, typename Callable>
+template<typename Msg, typename Callable>
         void AbstractPluginInterface::registerPluginEngineCalback(Engine * engine, Callable f)
 {
-    engine->getInterface()->addConnection<TMsg>(f);
+    engine->getInterface()->addConnection<Msg>(f);
 }
 
 Q_DECLARE_INTERFACE(AbstractPluginInterface, "com.my.AbstractPluginInterface")

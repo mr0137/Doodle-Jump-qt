@@ -1,11 +1,11 @@
 #include "isceneiteminterface.h"
 
-ISceneItemInterface::ISceneItemInterface()
+ISceneItem::ISceneItem()
 {
 
 }
 
-ISceneItemInterface::~ISceneItemInterface()
+ISceneItem::~ISceneItem()
 {
 
 }

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <pluginsbase_global.h>
 #include <base/sceneitem.h>
+#include <QVariantMap>
 
 class PLUGINSBASE_EXPORT SceneItemsFactory : public QObject
 {
@@ -15,7 +16,7 @@ public:
 private:
     void setParams(QObject *obj, QVariantMap params)
     {
-        QMapIterator iter(params);
+        QMapIterator<QString, QVariant> iter(params);
         QMap<QString, int> properties;
 
         for (int i = 0, size = obj->metaObject()->propertyCount(); i < size; i++)

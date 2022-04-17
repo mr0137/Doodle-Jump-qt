@@ -11,7 +11,7 @@ struct CORE_EXPORT EmptyMessage : public MessageBase
     static bool checkType(int type) {return type == m_type;}
     static bool checkType(MessageBase *msg) {return msg->getType() == m_type;}
 private:
-    inline static int m_type = 0;
+    static inline int m_type = 0;
 public:
 
     void serialize(QDataStream *) const override {};

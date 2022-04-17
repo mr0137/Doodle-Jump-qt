@@ -17,39 +17,37 @@ class ControllerFactory;
 
 class PLUGINSBASE_EXPORT IPhysicalItem : public AbstractPluginInterface
 {
-private:
-    QList<SceneItemsFactory *> creators;
-    QList<ControllerFactory *> controllers;
 public:
     IPhysicalItem();
-//    virtual QList<QString> sceneItemList() = 0;
-    QList<SceneItemsFactory*> getSceneItemsFactories() {return creators;}
-//    virtual void init(Engine* eng) = 0;
-    QList<ControllerFactory*> getControllerFactories() {return controllers;}
+    QList<SceneItemsFactory*> getSceneItemsFactories() {return m_creators;}
+    QList<ControllerFactory*> getControllerFactories() {return m_controllers;}
     virtual QStringList creatableTypes() { return {}; }
     template<class T> void createItemFactory();
     template<class T> void createControllerFactory();
     ~IPhysicalItem();
+private:
+    QList<SceneItemsFactory *> m_creators;
+    QList<ControllerFactory *> m_controllers;
 };
 
 template<class T>
-        void IPhysicalItem::createItemFactory()
+void IPhysicalItem::createItemFactory()
 {
     assert (!typeName().isEmpty());
     auto f = new SceneItemsFactory([]()->SceneItem*{ return new T();});
     f->setObjectName(typeName());
     //TODO : fix path
 //    f->setComponentsMap(m);
-    creators.push_back(f);
+    m_creators.push_back(f);
 }
 
 template<class T>
-        void IPhysicalItem::createControllerFactory()
+void IPhysicalItem::createControllerFactory()
 {
     assert (!typeName().isEmpty());
     auto cf = new ControllerFactory([]()->AbstractObjectController*{ return new T();});
     cf->setObjectName(typeName());
-    controllers.push_back(cf);
+    m_controllers.push_back(cf);
 }
 Q_DECLARE_INTERFACE(IPhysicalItem, "com.my.IPhysicalItem")
 

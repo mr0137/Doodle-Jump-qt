@@ -16,7 +16,7 @@ static bool checkType(int type) {return type == m_type;}\
 static bool checkType(MessageBase *msg) {return msg->getType() == m_type;}
     CreateItemMsg();
 
-    double position[3];
+    double position[2];
     int id;
     int controllerId;
 
@@ -33,9 +33,7 @@ public:
 
 struct PLUGINSBASE_EXPORT CreateItemMsgAns : public MessageBase
 {
-
-public:
-    int getType() const override {return m_type;}
+    int getType() const override { return m_type; }
     static bool checkType(int type) {return type == m_type;}
     static bool checkType(MessageBase *msg) {return msg->getType() == m_type;}
     CreateItemMsgAns();
@@ -43,7 +41,7 @@ public:
     double position[3];
     int controllerId;
 private:
-    inline static int m_type = 20;
+    static inline int m_type = 20;
 };
 
 #endif // CREATEITEMMSG_H
