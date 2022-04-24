@@ -5,7 +5,7 @@
 #include "messagenegotiator.h"
 #include "core_global.h"
 
-class Engine;
+class EngineBase;
 
 class CORE_EXPORT AbstractObjectController
 {
@@ -14,16 +14,16 @@ public:
     virtual ~AbstractObjectController();
 
     virtual void proceed(double) = 0;
-    virtual void init(MessageBase * message, Engine * engine) = 0;
+    virtual void init(MessageBase * message, EngineBase *engine) = 0;
 
     QByteArray proceedMsg(MessageHeader *header, QDataStream &stream);
 
     void setPiId(int value);
     int getPiId() const { return m_id; }
-    void setEngine(Engine *e);
+    void setEngineBase(EngineBase *e);
 
 protected:
-    Engine *m_engine;
+    EngineBase *m_engine;
     int m_id;
     MessageNegotiator *m_negotiator;
 };

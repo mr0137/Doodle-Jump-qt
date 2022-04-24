@@ -6,33 +6,45 @@
 #include <QPointF>
 #include <QVariant>
 #include <pluginsbase_global.h>
+#include <QRectF>
 
 class PLUGINSBASE_EXPORT SceneItem : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString type READ type WRITE setType NOTIFY typeChanged)
-    Q_PROPERTY(int sceneID READ sceneID WRITE setSceneID NOTIFY sceneIDChanged)
 public:
-    explicit SceneItem(QObject *parent = nullptr);
+    explicit SceneItem(uint32_t id, QString type, QObject *parent = nullptr);
 
-    virtual QVariantMap serialize() { return {}; }
-    virtual void deserialize(QVariantMap map) { Q_UNUSED(map) }
-
-    int sceneID() const;
     QString type() const;
-
-    void setSceneID(int newSceneID);
     void setType(const QString &newType);
+    uint32_t id() const;
 
-signals:
-    void pressed();
-    void typeChanged();
-    void sceneIDChanged();
+    double x() const;
+    double y() const;
+    double width() const;
+    double height() const;
+
+    const QString &imagePath() const;
+    QRectF boundingRect() const;
+
+    enum RemovingState : uint8_t{
+        NONE,
+        PREPARE,
+        READY
+    };
+
+    RemovingState removeState();
 
 private:
-    static inline const int SceneItemQMLRegistration = qmlRegisterType<SceneItem>("PluginsBase", 1, 0, "SceneItem");
     QString m_type = "SceneItem";
     int m_sceneID;
+    uint32_t m_id;
+    double m_x;
+    double m_y;
+    double m_width;
+    double m_height;
+    QString m_imagePath;
+    RemovingState m_removingState = NONE;
+    QRectF m_boundingRect;
 };
 
 #endif // SCENEITEM_H

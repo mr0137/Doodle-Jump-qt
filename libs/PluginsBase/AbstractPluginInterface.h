@@ -4,11 +4,9 @@
 #include "pluginsbase_global.h"
 #include <QObject>
 #include <QVariantList>
-#include <engine.h>
+#include <enginebase.h>
 
 typedef QMap<QString, QMap<QString, QMap<QString, QString>>> ComponentsMap;
-class Engine;
-
 
 class PLUGINSBASE_EXPORT AbstractPluginInterface {
 
@@ -20,20 +18,16 @@ public:
     AbstractPluginInterface();
     virtual ~AbstractPluginInterface();
 
-    virtual void init(Engine * engine, QString appPath = "", const QVariantList &depencies = QVariantList()) = 0;
-    //!
-    //! \brief Returns components that must be created for certain plugin.
-    //! \return returns components that must be created for certain plugin
-    //!
+    virtual void init(EngineBase * engine, QString appPath = "", const QVariantList &depencies = QVariantList()) = 0;
     virtual ComponentsMap getComponents() = 0;
 
     template<typename Msg, typename Callable>
-    void registerPluginEngineCalback(Engine*, Callable f);
+    void registerPluginEngineCalback(EngineBase*, Callable f);
 
 };
 
 template<typename Msg, typename Callable>
-        void AbstractPluginInterface::registerPluginEngineCalback(Engine * engine, Callable f)
+        void AbstractPluginInterface::registerPluginEngineCalback(EngineBase * engine, Callable f)
 {
     engine->getInterface()->addConnection<Msg>(f);
 }

@@ -2,27 +2,25 @@
 
 void SetModeEngineMsgAns::serialize(QDataStream *s) const
 {
-    *s << this->modeChangedSuccess << this->mode;
+    *s << modeChangedSuccess << mode;
 }
 
 void SetModeEngineMsgAns::deserialize(QDataStream *s)
 {
-    *s >> this->modeChangedSuccess;
-    int mode;
-    *s >> mode;
-    this->mode = static_cast<EngineMode>(mode);
+    *s >> modeChangedSuccess;
+    int m;
+    *s >> m;
+    mode = static_cast<EngineBaseMode>(m);
 }
 
 void SetModeEngineMsg::serialize(QDataStream *s) const
 {
-    *s << this->mode;
+    *s << mode;
 }
 
 void SetModeEngineMsg::deserialize(QDataStream *s)
 {
     int mode;
     *s >> mode;
-    this->mode = static_cast<EngineMode>(mode);
+    this->mode = static_cast<EngineBaseMode>(mode);
 }
-
-

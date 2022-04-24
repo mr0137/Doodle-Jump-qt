@@ -18,10 +18,10 @@ AppCore *AppCore::getInstance()
     return m_appcore;
 }
 
-QObject *AppCore::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+QObject *AppCore::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngineBase)
 {
     Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
+    Q_UNUSED(scriptEngineBase)
     return getInstance();
 }
 

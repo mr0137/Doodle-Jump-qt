@@ -1,10 +1,5 @@
 #include "removeitemmessage.h"
 
-RemoveItemMessage::RemoveItemMessage()
-{
-
-}
-
 void RemoveItemMessage::serialize(QDataStream *s) const
 {
     *s << static_cast<int>(ids.size());
@@ -27,10 +22,10 @@ void RemoveItemMessage::deserialize(QDataStream *s)
 
 void RemoveItemMessageAns::serialize(QDataStream *s) const
 {
-    *s << this->removed;
+    *s << modeChangedSuccess;
 }
 
 void RemoveItemMessageAns::deserialize(QDataStream *s)
 {
-    *s >> this->removed;
+    *s >> modeChangedSuccess;
 }

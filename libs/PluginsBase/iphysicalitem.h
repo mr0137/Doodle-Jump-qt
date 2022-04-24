@@ -6,7 +6,7 @@
 #include <QString>
 #include <QQmlEngine>
 #include <QQmlContext>
-#include <engine.h>
+#include <enginebase.h>
 #include <pluginsbase_global.h>
 #include <base/sceneitem.h>
 #include <factories/controllerfactory.h>
@@ -36,8 +36,6 @@ void IPhysicalItem::createItemFactory()
     assert (!typeName().isEmpty());
     auto f = new SceneItemsFactory([]()->SceneItem*{ return new T();});
     f->setObjectName(typeName());
-    //TODO : fix path
-//    f->setComponentsMap(m);
     m_creators.push_back(f);
 }
 

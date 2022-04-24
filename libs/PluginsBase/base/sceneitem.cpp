@@ -1,6 +1,6 @@
 #include "sceneitem.h"
 
-SceneItem::SceneItem(QObject *parent) : QObject(parent)
+SceneItem::SceneItem(uint32_t id, QString type, QObject *parent) : QObject(parent), m_id(id)
 {
 
 }
@@ -12,21 +12,45 @@ QString SceneItem::type() const
 
 void SceneItem::setType(const QString &newType)
 {
-    if (m_type == newType)
-        return;
     m_type = newType;
-    emit typeChanged();
 }
 
-int SceneItem::sceneID() const
+uint32_t SceneItem::id() const
 {
-    return m_sceneID;
+    return m_id;
 }
 
-void SceneItem::setSceneID(int newSceneID)
+double SceneItem::x() const
 {
-    if (m_sceneID == newSceneID)
-        return;
-    m_sceneID = newSceneID;
-    emit sceneIDChanged();
+    return m_x;
+}
+
+double SceneItem::y() const
+{
+    return m_y;
+}
+
+double SceneItem::width() const
+{
+    return m_width;
+}
+
+double SceneItem::height() const
+{
+    return m_height;
+}
+
+const QString &SceneItem::imagePath() const
+{
+    return m_imagePath;
+}
+
+SceneItem::RemovingState SceneItem::removeState()
+{
+    return m_removingState;
+}
+
+QRectF SceneItem::boundingRect() const
+{
+    return QRectF(m_x, m_y, m_width, m_height);
 }

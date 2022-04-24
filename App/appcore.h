@@ -13,7 +13,7 @@ class AppCore : public QObject
     explicit AppCore(QObject *parent = nullptr);
 public:
     static AppCore* getInstance();
-    static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+    static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngineBase);
 
     Scene *scene() const;
     void setScene(Scene *newScene);

@@ -11,12 +11,10 @@ SOURCES += \
     basemovecontroller.cpp \
     circlebuffer.cpp \
     emptymessage.cpp \
-    engine.cpp \
+    enginebase.cpp \
     engineinterface.cpp \
-    imesssage.cpp \
     itemsfactory.cpp \
     messageanswerdispatcher.cpp \
-    messagebase.cpp \
     messageheader.cpp \
     messagenegotiator.cpp
 
@@ -26,12 +24,11 @@ HEADERS += \
     circlebuffer.h \
     core_global.h \
     emptymessage.h \
-    engine.h \
+    enginebase.h \
     engineinterface.h \
-    imesssage.h \
+    imessage.h \
     itemsfactory.h \
     messageanswerdispatcher.h \
-    messagebase.h \
     messageheader.h \
     messagenegotiator.h
 

@@ -4,4 +4,4 @@ SUBDIRS += \
     Core \
     PluginsBase
 
-
+CONFIG += ordered

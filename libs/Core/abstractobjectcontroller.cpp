@@ -15,7 +15,7 @@ void AbstractObjectController::setPiId(int value)
     m_id = value;
 }
 
-void AbstractObjectController::setEngine(Engine *value)
+void AbstractObjectController::setEngineBase(EngineBase *value)
 {
     m_engine = value;
 }

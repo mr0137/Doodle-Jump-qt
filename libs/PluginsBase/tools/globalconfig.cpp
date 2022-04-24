@@ -13,9 +13,9 @@ GlobalConfig *GlobalConfig::instance(){
     return m_instance;
 }
 
-QObject *GlobalConfig::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+QObject *GlobalConfig::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngineBase)
 {
     Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
+    Q_UNUSED(scriptEngineBase)
     return instance();
 }

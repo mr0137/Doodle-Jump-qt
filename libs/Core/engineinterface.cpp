@@ -2,7 +2,7 @@
 #include "engineinterface.h"
 #include "messagenegotiator.h"
 
-EngineInterface::EngineInterface(): fromEngine(200), toEngine(200)
+EngineInterface::EngineInterface(): fromEngineBase(200), toEngineBase(200)
 {
     answerDispatcher = new MessageAnswerDispatcher;
 }
@@ -14,7 +14,7 @@ EngineInterface::~EngineInterface()
 
 void EngineInterface::proceed() {
     while (true) {
-        auto bA = fromEngine.pop();
+        auto bA = fromEngineBase.pop();
         if (bA.size() < 4) break; //no message to proceed
         QDataStream s(bA);
         MessageHeader h;
@@ -24,8 +24,8 @@ void EngineInterface::proceed() {
         if (h.isAnswer) {
             answerDispatcher->proceedMsgAnswer(h, s);
         } else {
-            auto search = msgFromEngineHandlers.find(h.type);
-            if(search != msgFromEngineHandlers.end()){
+            auto search = msgFromEngineBaseHandlers.find(h.type);
+            if(search != msgFromEngineBaseHandlers.end()){
                 search->second(s, h.itemId);
             }
         }
@@ -40,7 +40,7 @@ void EngineInterface::_pushAnswerEngineSide(const QByteArray & msg, MessageHeade
     QDataStream s(&data, QIODevice::ReadWrite);
     s << *header;
     data.append(msg);
-    fromEngine.push(data);
+    fromEngineBase.push(data);
 }
 
 

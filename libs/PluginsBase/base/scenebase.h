@@ -4,45 +4,29 @@
 #include <QObject>
 #include <QQmlComponent>
 #include <base/sceneitem.h>
+#include <factories/controllerfactory.cpp>
 #include <factories/sceneitemsfactory.cpp>
 #include <engineinterface.h>
-
-typedef QMap<QString, QQmlComponent*> QmlComponents;
-typedef QMap<QString, QString> PathComponents;
-typedef QMap<QString, QmlComponents> PluginQmlComponents;
-typedef QMap<QString, PathComponents> PluginPathComponents;
-typedef QMap<QString, PluginQmlComponents> QQmlComponentsContainer;
-typedef QMap<QString, PluginPathComponents> PathComponentsContainer;
 
 class PLUGINSBASE_EXPORT SceneBase : public QObject
 {
     Q_OBJECT
-    //K_AUTO_PROPERTY(double, sceneWidth, sceneWidth, setSceneWidth, sceneWidthChanged, 5000)
-    //K_AUTO_PROPERTY(double, sceneHeight, sceneHeight, setSceneHeight, sceneHeightChanged, 5000)
-    //K_PROTECTED_PROPERTY(QStringList, creatableItems, creatableItems, setCreatableItems, creatableItemsChanged, QStringList())
+
 public:
-    explicit SceneBase(QObject *parent = nullptr);
+    explicit SceneBase(QObject *parent = nullptr) : QObject(parent) {}
     virtual void addFactory(QList<SceneItemsFactory*> factories) = 0;
-    virtual void addComponents(QMap<QString, QMap<QString, QMap<QString, QString>>> sceneComponents) = 0;
-public slots:
-    virtual SceneItem *addItem(QPointF pos, QString objectName) = 0;
-    virtual SceneItem *addItem(double x, double y, QString type) = 0;
-    virtual void updateItems() = 0;
     virtual void setEngineInterface(EngineInterface * ei) = 0;
+
+protected:
+    SceneItem* getItem(uint32_t id);
+    virtual SceneItem *addItem(QPointF pos, QString objectType, uint32_t id) = 0;
+    virtual SceneItem *addItem(double x, double y, QString objectType, uint32_t id) = 0;
     virtual void removeItem(SceneItem* item) = 0;
-    virtual QQmlComponent * getComponent(SceneItem *object, QString type) = 0;
-    virtual QQmlComponent * getComponent(QString category, QString objectName, QString type) = 0;
-    virtual QVariantList getComponents(QString type) = 0;
+
 protected:
     QHash<QString, SceneItemsFactory*> factoriesHash;
-    QHash<QString, QVariantMap> createdControllers;
+    QHash<QString, ControllerFactory*> createdControllers;
 
-    QQmlComponentsContainer createdComponents;
-    PathComponentsContainer allComponents;
-private:
-    static inline const int SceneBaseQMLRegistration = qmlRegisterInterface<SceneBase>("PluginsBase", 1);
-signals:
-    void updateComponents();
 };
 
 #endif // SCENEBASE_H

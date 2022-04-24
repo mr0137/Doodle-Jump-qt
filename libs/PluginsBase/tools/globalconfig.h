@@ -10,7 +10,7 @@ class GlobalConfig : public QObject
 public:
     explicit GlobalConfig(QObject *parent = nullptr);
     static GlobalConfig *instance();
-    static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+    static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngineBase);
     static inline const int GlobalStyleQMLRegistration = qmlRegisterSingletonType<GlobalConfig>("PluginsBase", 1, 0, "GlobalConfig", &GlobalConfig::qmlInstance);
 
     enum SettingsWindowMode{

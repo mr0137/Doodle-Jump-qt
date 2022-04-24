@@ -3,7 +3,7 @@
 
 #include "core_global.h"
 #include <circlebuffer.h>
-#include <engine.h>
+#include <enginebase.h>
 #include <messageanswerdispatcher.h>
 #include <QDataStream>
 #include <map>
@@ -11,7 +11,7 @@
 
 struct MessageBase;
 class MessageNegotiator;
-class Engine;
+class EngineBase;
 class SampleDataGetter;
 
 class CORE_EXPORT MessageConnector {
@@ -40,7 +40,7 @@ public:
 
 class CORE_EXPORT EngineInterface
 {
-    friend class Engine;
+    friend class EngineBase;
     friend MsgAnswerHandler;
     friend class SampleDataGetter;
 public:
@@ -50,13 +50,13 @@ public:
     void proceed();
 
     template<class Msg>
-    MsgAnswerHandler sendToEngine(Msg msg, int itemId = -1);
+    MsgAnswerHandler sendToEngine(Msg msg, uint32_t itemId = -1);
 
     template<class Msg>
-    void installStreamMsg(std::function<void(Msg, int)>);
+    void installStreamMsg(std::function<void(Msg, uint32_t)>);
 
     template<class Msg, class ... Msgs>
-    void sendFromEngine(Msg msg, Msgs ... msgs, int itemId = -1);
+    void sendFromEngine(Msg msg, Msgs ... msgs, uint32_t itemId = -1);
 
     void _pushAnswerEngineSide(const QByteArray &msg, MessageHeader *header);
 
@@ -83,17 +83,17 @@ public:
     }
 
 private:
-    CircleBuffer<QByteArray> fromEngine;
-    CircleBuffer<QByteArray> toEngine;
+    CircleBuffer<QByteArray> fromEngineBase;
+    CircleBuffer<QByteArray> toEngineBase;
 
     int nextMsgId=0;
-    int nextMsgIdEngineSide=0;
+    int nextMsgIdEngineBaseSide=0;
 
 
     MessageAnswerDispatcher * answerDispatcher;
-    Engine *m_engine;
+    EngineBase *m_engine;
 
-    std::map<int, std::function<int(QDataStream &s, int)>> msgFromEngineHandlers;
+    std::map<int, std::function<int(QDataStream &s, int)>> msgFromEngineBaseHandlers;
     //
     std::map<int, std::vector<MessageConnector>> msgConnections;
 
@@ -102,28 +102,27 @@ private:
 
 
 template<class Msg, class ... Msgs>
-void EngineInterface::sendFromEngine(Msg msg, Msgs ... msgs, int itemId)
+void EngineInterface::sendFromEngine(Msg msg, Msgs ... msgs, uint32_t itemId)
 {
     QByteArray data;
     QDataStream s(&data, QIODevice::WriteOnly);
     //write header
     MessageHeader header;
-    header.uid = this->nextMsgIdEngineSide++;
-//    qDebug() << Msg().getType();
+    header.uid = this->nextMsgIdEngineBaseSide++;
     header.type = Msg().getType();
     header.itemId = itemId;
     header.isAnswer = false;
     s << header;
     //write msg
     msg.serialize(&s);
-    fromEngine.push(data);
+    fromEngineBase.push(data);
     if constexpr (sizeof...(msgs) > 0) {
-        sendFromEngine(msgs..., itemId);
+        sendFromEngineBase(msgs..., itemId);
     }
 }
 
 template <class Msg>
-MsgAnswerHandler EngineInterface::sendToEngine(Msg msg, int itemId)
+MsgAnswerHandler EngineInterface::sendToEngine(Msg msg, uint32_t itemId)
 {
     QByteArray data;
     QDataStream s(&data, QIODevice::WriteOnly);
@@ -136,13 +135,13 @@ MsgAnswerHandler EngineInterface::sendToEngine(Msg msg, int itemId)
     s << header;
     //write msg
     msg.serialize(&s);
-    toEngine.push(data);
+    toEngineBase.push(data);
     MsgAnswerHandler handler(this->answerDispatcher, header.uid);
     return handler;
 }
 
 template<class Msg>
-void EngineInterface::installStreamMsg(std::function<void(Msg, int)> lambda){
+void EngineInterface::installStreamMsg(std::function<void(Msg, uint32_t)> lambda){
 
     auto type = Msg().getType();
 
@@ -153,7 +152,7 @@ void EngineInterface::installStreamMsg(std::function<void(Msg, int)> lambda){
         lambda(msg, itemId);
         return msg.getType();
     };
-    msgFromEngineHandlers.insert({type, funcTobeCalled});
+    msgFromEngineBaseHandlers.insert({type, funcTobeCalled});
 }
 
 #endif // ENGINEINTERFACE_H
