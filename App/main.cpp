@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
     auto coreEngine = new Engine();
     //! [additional]
 
-    coreEngine->start();
     QObject::connect(&app, &QGuiApplication::aboutToQuit, coreEngine, &Engine::stop);
+    coreEngine->start();
 
     auto ei = coreEngine->getInterface();
     qmlRegisterType<QObject>("KLib", 1, 0, "Null");

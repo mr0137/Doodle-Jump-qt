@@ -36,7 +36,6 @@ QSGNode *SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 
         n->appendChildNode(n->background);
         n->appendChildNode(n->grid);
-
         m_geometryChanged = true;
     }
 
@@ -46,7 +45,7 @@ QSGNode *SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     }
 
     m_geometryChanged = false;
-
+    update();
     return n;
 }
 

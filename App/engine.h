@@ -1,7 +1,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include "base/global_messages/createitemmessage.h"
+
 #include <QFuture>
 #include <QObject>
 #include <QTimer>
@@ -9,8 +9,9 @@
 
 #include <factories/controllerfactory.h>
 
-#include <base/global_messages/removeitemmessage.h>
-#include <base/global_messages/setmodeenginemsg.h>
+#include <removeitemmessage.h>
+#include <setmodeenginemsg.h>
+#include <createitemmessage.h>
 
 class Engine : public QObject, public EngineBase
 {

@@ -5,6 +5,7 @@
 #include <map>
 #include <functional>
 #include "abstractobjectcontroller.h"
+#include "levelgenerator.h"
 #include <messagenegotiator.h>
 #include <engineinterface.h>
 #include <core_global.h>
@@ -29,7 +30,7 @@ public:
     unsigned long long engineTime() const;
     std::vector<std::function<void()>> oneSecondCallbacks;
 
-    std::map<int, AbstractObjectController *> & getPiControllers();
+    std::map<uint32_t, AbstractObjectController *> & getPiControllers();
 
 protected:
     void proceed(int uSecond, int dt);
@@ -37,9 +38,10 @@ protected:
     void insertController(int id, AbstractObjectController *c);
     QByteArray proceedItemMsg(MessageHeader header, QDataStream &s);
 
-    std::map<int, AbstractObjectController*> m_objectControllers;
+    std::map<uint32_t, AbstractObjectController*> m_objectControllers;
     MessageNegotiator *messageNegotiator;
     EngineInterface *m_interface;
+    LevelGenerator *m_levelGenerator;
     bool doMath;
 
 private:

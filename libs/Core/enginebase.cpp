@@ -5,6 +5,7 @@ EngineBase::EngineBase()
     m_interface = new EngineInterface;
     m_interface->m_engine = this;
     messageNegotiator = new MessageNegotiator;
+    m_levelGenerator = new LevelGenerator(m_interface);
 
     doMath = false;
 }
@@ -42,7 +43,9 @@ void EngineBase::proceed(int uSecond, int dt)
             m_interface->_pushAnswerEngineSide(answ, &msgMessageHeader);
         }
     }
+
     if(doMath){
+        m_levelGenerator->proceed();
         //proceed physical items
         for (auto c : m_objectControllers) {
             c.second->proceed(1000);
@@ -79,7 +82,7 @@ QByteArray EngineBase::proceedItemMsg(MessageHeader header, QDataStream &s)
     return nullptr;
 }
 
-std::map<int, AbstractObjectController *> & EngineBase::getPiControllers()
+std::map<uint32_t, AbstractObjectController *> &EngineBase::getPiControllers()
 {
     return m_objectControllers;
 }

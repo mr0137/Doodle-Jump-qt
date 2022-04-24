@@ -17,7 +17,8 @@ public:
 
     Scene *scene() const;
     void setScene(Scene *newScene);
-
+public slots:
+    void start();
 signals:
     void sceneChanged();
 

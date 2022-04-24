@@ -11,12 +11,16 @@
 class PLUGINSBASE_EXPORT SceneItem : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(uint32_t id READ id WRITE setId NOTIFY idChanged)
+    Q_PROPERTY(double x READ x WRITE setX NOTIFY xChanged)
+    Q_PROPERTY(double y READ y WRITE setY NOTIFY yChanged)
 public:
-    explicit SceneItem(uint32_t id, QString type, QObject *parent = nullptr);
+    explicit SceneItem(QObject *parent = nullptr);
 
     QString type() const;
     void setType(const QString &newType);
     uint32_t id() const;
+    void setId(uint32_t newId);
 
     double x() const;
     double y() const;
@@ -34,7 +38,18 @@ public:
 
     RemovingState removeState();
 
-private:
+    void setX(double newX);
+
+    void setY(double newY);
+
+signals:
+    void idChanged();
+
+    void xChanged();
+
+    void yChanged();
+
+protected:
     QString m_type = "SceneItem";
     int m_sceneID;
     uint32_t m_id;

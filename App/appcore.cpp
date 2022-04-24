@@ -1,11 +1,14 @@
 #include "appcore.h"
 #include <QGuiApplication>
 
+#include "slabdefault.h"
+
 AppCore::AppCore(QObject *parent)
     : QObject{parent},
       m_scene(new Scene(this))
 {
-
+    auto testFactory = new SceneItemsFactory("SlabDefault", []() -> SceneItem*{ return new SlabDefault(); });
+    m_scene->addFactory({testFactory});
 }
 
 AppCore *AppCore::getInstance()
@@ -36,4 +39,9 @@ void AppCore::setScene(Scene *newScene)
         return;
     m_scene = newScene;
     emit sceneChanged();
+}
+
+void AppCore::start()
+{
+    m_scene->startTest();
 }

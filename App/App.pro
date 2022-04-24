@@ -14,7 +14,8 @@ SOURCES += \
     scene/background/backgroundgrid.cpp \
     scene/background/backgroundnoise.cpp \
     scene/scene.cpp \
-    scene/sceneview.cpp
+    scene/sceneview.cpp \
+    slabdefault.cpp
 
 RESOURCES += resources/qml.qrc
 
@@ -27,7 +28,8 @@ HEADERS += \
     scene/background/backgroundgrid.h \
     scene/background/backgroundnoise.h \
     scene/scene.h \
-    scene/sceneview.h
+    scene/sceneview.h \
+    slabdefault.h
 
 CONFIG(release, debug|release){
 DEFINES += QT_NO_DEBUG_OUTPUT

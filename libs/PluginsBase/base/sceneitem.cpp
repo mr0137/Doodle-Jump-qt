@@ -1,6 +1,6 @@
 #include "sceneitem.h"
 
-SceneItem::SceneItem(uint32_t id, QString type, QObject *parent) : QObject(parent), m_id(id)
+SceneItem::SceneItem(QObject *parent) : QObject(parent)
 {
 
 }
@@ -53,4 +53,28 @@ SceneItem::RemovingState SceneItem::removeState()
 QRectF SceneItem::boundingRect() const
 {
     return QRectF(m_x, m_y, m_width, m_height);
+}
+
+void SceneItem::setId(uint32_t newId)
+{
+    if (m_id == newId)
+        return;
+    m_id = newId;
+    emit idChanged();
+}
+
+void SceneItem::setX(double newX)
+{
+    if (qFuzzyCompare(m_x, newX))
+        return;
+    m_x = newX;
+    emit xChanged();
+}
+
+void SceneItem::setY(double newY)
+{
+    if (qFuzzyCompare(m_y, newY))
+        return;
+    m_y = newY;
+    emit yChanged();
 }

@@ -24,8 +24,8 @@ protected:
     virtual void removeItem(SceneItem* item) = 0;
 
 protected:
-    QHash<QString, SceneItemsFactory*> factoriesHash;
-    QHash<QString, ControllerFactory*> createdControllers;
+    QHash<QString, SceneItemsFactory*> m_factoriesHash;
+    QHash<QString, ControllerFactory*> m_createdControllers;
 
 };
 

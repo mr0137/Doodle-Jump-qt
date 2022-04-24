@@ -14,9 +14,6 @@ DESTDIR = $$PWD/../../bin/libs/
 DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += PLUGINSBASE_LIBRARY
 SOURCES += \
-        base/global_messages/createitemmessage.cpp \
-        base/global_messages/removeitemmessage.cpp \
-        base/global_messages/setmodeenginemsg.cpp \
         base/scenebase.cpp \
         engine/messages/changecoordsmsg.cpp \
         factories/controllerfactory.cpp \
@@ -27,9 +24,6 @@ SOURCES += \
         tools/globalconfig.cpp
 
 HEADERS += \
-        base/global_messages/createitemmessage.h \
-        base/global_messages/removeitemmessage.h \
-        base/global_messages/setmodeenginemsg.h \
         base/scenebase.h \
         engine/messages/changecoordsmsg.h \
         factories/controllerfactory.h \

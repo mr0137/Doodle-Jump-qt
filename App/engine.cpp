@@ -13,8 +13,8 @@ Engine::Engine(QObject *parent) : QObject(parent), lastCreatedPIID(0)
         m_interface->proceed();
     });
 
-    messageNegotiator->registerMsgHandler(&Engine::proceedCreateItemMsg, this);
-    messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
+    //messageNegotiator->registerMsgHandler(&Engine::proceedCreateItemMsg, this);
+    //messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
     messageNegotiator->registerMsgHandler(&Engine::proceedSetEngineModeMsg, this);
 }
 
@@ -81,6 +81,16 @@ RemoveItemMessageAns Engine::proceedRemoveItemMsg(RemoveItemMessage msg)
 
 SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
 {
+    if(msg.mode == START)
+        this->doMath = true;
+    if(msg.mode == PAUSE || msg.mode == RESET)
+        this->doMath = false;
+    if(msg.mode == RESET) {
+        for (auto p : m_objectControllers) {
+            delete p.second;
+        }
+        m_objectControllers.clear();
+    }
     SetModeEngineMsgAns msgAnswer;
     msgAnswer.modeChangedSuccess = true;
     msgAnswer.mode = msg.mode;

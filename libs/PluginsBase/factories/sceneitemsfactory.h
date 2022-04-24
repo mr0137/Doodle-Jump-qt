@@ -10,8 +10,8 @@ class PLUGINSBASE_EXPORT SceneItemsFactory : public QObject
 {
     Q_OBJECT
 public:
-    SceneItemsFactory(std::function<SceneItem*()> cr) : m_creator(cr) {}
-
+    SceneItemsFactory(QString type, std::function<SceneItem*()> cr) : m_creator(cr), m_type(type) {}
+    QString type() { return m_type;}
     SceneItem *create(QVariantMap params){ auto item = m_creator(); setParams(item, params); return item; }
 private:
     void setParams(QObject *obj, QVariantMap params)
@@ -37,6 +37,7 @@ private:
 
 private:
     std::function<SceneItem*()> m_creator = nullptr;
+    QString m_type;
 };
 
 #endif // SCENEITEMSFACTORY_H
