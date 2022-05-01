@@ -7,7 +7,6 @@
 #include "abstractobjectcontroller.h"
 #include "levelgenerator.h"
 #include <messagenegotiator.h>
-#include <engineinterface.h>
 #include <core_global.h>
 #include <mutex>
 
@@ -21,6 +20,7 @@ public:
     ~EngineBase();
 
     EngineInterface *getInterface() const;
+    LevelGenerator *getLevelGenerator() const;
 
     virtual void start() = 0;
     virtual void stop() = 0;
@@ -44,7 +44,7 @@ protected:
     EngineInterface *m_interface;
     LevelGenerator *m_levelGenerator;
     CollisionDetector *m_collisionDetector;
-    bool doMath;
+    bool doMath = false;
 
 private:
     int prevTime_us = 0;

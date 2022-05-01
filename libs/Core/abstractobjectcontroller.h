@@ -9,9 +9,11 @@
 enum class ControllerType
 {
     SLAB,
-    MONSTER,
+    MONSTER,    //monster, boost, etc
     DOODLER,
-    GHOST
+    GHOST,      //multiplayer doodler
+    BULLET,
+    POWERUP
 };
 
 struct Rect
@@ -67,7 +69,7 @@ public:
 
 protected:
     EngineBase *m_engine;
-    int m_id;
+    uint32_t m_id;
     MessageNegotiator *m_negotiator;
 
     Rect m_boundingRect = {0,0,0,0};

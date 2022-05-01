@@ -18,7 +18,7 @@ public:
     uint32_t id;
 
 private:
-    static inline uint32_t m_messageType = 7;
+    const static uint32_t m_messageType = 7;
 };
 
 struct PLUGINSBASE_EXPORT ChangeCoordsMsgAns : MessageBase
@@ -34,7 +34,7 @@ public:
     int id;
 
 private:
-    static inline uint32_t m_messageType = 8;
+    const static uint32_t m_messageType = 8;
 };
 
 #endif // CHANGECOORDSMSG_H

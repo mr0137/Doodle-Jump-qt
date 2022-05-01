@@ -6,9 +6,10 @@
 
 AppCore::AppCore(QObject *parent)
     : QObject{parent},
-      m_scene(new Scene(this))
+      m_scene(new Scene(this)),
+      m_engine(new Engine())
 {
-
+    m_scene->setEngineInterface(m_engine->getInterface());
 }
 
 AppCore *AppCore::getInstance()
@@ -28,6 +29,12 @@ QObject *AppCore::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngineBase)
     return getInstance();
 }
 
+AppCore::~AppCore()
+{
+    m_engine->stop();
+    delete m_engine;
+}
+
 Scene *AppCore::scene() const
 {
     return m_scene;
@@ -39,11 +46,6 @@ void AppCore::setScene(Scene *newScene)
         return;
     m_scene = newScene;
     emit sceneChanged();
-}
-
-void AppCore::setEngine(Engine *engine)
-{
-    m_engine = engine;
 }
 
 void AppCore::init(QString appPath)
@@ -73,6 +75,7 @@ void AppCore::init(QString appPath)
 
 void AppCore::start()
 {
+    m_engine->start();
     m_scene->startTest();
 }
 
@@ -89,5 +92,8 @@ void AppCore::load(QObject *pluginInstance)
     {
         m_engine->addCollideControllerFactories(pluginInterface->getControllerFactories());
         m_scene->addFactory(pluginInterface->getSceneItemFactories());
+        auto list = pluginInterface->getLevelObjectCreators();
+        auto v = std::vector<LevelObjectCreator*>(list->begin(), list->end());
+        m_engine->getLevelGenerator()->addCreators(v);
     }
 }

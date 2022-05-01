@@ -14,6 +14,7 @@ SOURCES += \
     enginebase.cpp \
     engineinterface.cpp \
     levelgenerator.cpp \
+    levelobjectcreator.cpp \
     messageanswerdispatcher.cpp \
     messageheader.cpp \
     messagenegotiator.cpp
@@ -28,6 +29,7 @@ HEADERS += \
     engineinterface.h \
     imessage.h \
     levelgenerator.h \
+    levelobjectcreator.h \
     messageanswerdispatcher.h \
     messageheader.h \
     messagenegotiator.h

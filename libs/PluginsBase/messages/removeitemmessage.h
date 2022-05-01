@@ -18,7 +18,7 @@ public:
     std::vector<uint32_t> ids;
 
 private:
-     static inline uint32_t m_messageType = 3;
+     const static uint32_t m_messageType = 3;
 };
 
 struct PLUGINSBASE_EXPORT RemoveItemMessageAns : MessageBase
@@ -33,7 +33,7 @@ public:
     bool modeChangedSuccess;
 
 private:
-     static inline uint32_t m_messageType = 4;
+     const static uint32_t m_messageType = 4;
 };
 
 #endif // REMOVEITEMMESSAGE_H

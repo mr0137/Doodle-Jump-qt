@@ -17,10 +17,10 @@ class AppCore : public QObject
 public:
     static AppCore* getInstance();
     static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngineBase);
+    ~AppCore();
 
     Scene *scene() const;
     void setScene(Scene *newScene);
-    void setEngine(Engine* engine);
     void init(QString appPath);
 
 public slots:

@@ -25,14 +25,16 @@ public:
     void connectToMsg(Callable m)
     {
         messageType = Msg().getType();
-        callbackOnMsg = [m](QDataStream & s){
+        callbackOnMsg = [m](QDataStream & s)
+        {
             Msg msg;
             msg.deserialize(&s);
             m(msg);
         };
     }
 
-    void operator()(QDataStream &s) {
+    void operator()(QDataStream &s)
+    {
         callbackOnMsg(s);
     }
 };
@@ -61,7 +63,8 @@ public:
     void _pushAnswerEngineSide(const QByteArray &msg, MessageHeader *header);
 
     template<typename Msg, typename Callable>
-    void addConnection(Callable f) {
+    void addConnection(Callable f)
+    {
 
         int type = Msg().getType();
 
@@ -72,10 +75,13 @@ public:
 
     }
 
-    void runConnections(int type, QDataStream &s) {
-        if(msgConnections.find(type) != msgConnections.end()) {
+    void runConnections(int type, QDataStream &s)
+    {
+        if(msgConnections.find(type) != msgConnections.end())
+        {
             int pos = s.device()->pos();
-            for(auto mConn : msgConnections[type]) {
+            for(auto mConn : msgConnections[type])
+            {
                 mConn(s);
                 s.device()->seek(pos);
             }
@@ -94,7 +100,6 @@ private:
     EngineBase *m_engine;
 
     std::map<int, std::function<int(QDataStream &s, int)>> msgFromEngineBaseHandlers;
-    //
     std::map<int, std::vector<MessageConnector>> msgConnections;
 
 };

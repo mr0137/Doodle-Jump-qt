@@ -1,11 +1,12 @@
 #include "enginebase.h"
+#include "engineinterface.h"
 
 EngineBase::EngineBase()
 {
     m_interface = new EngineInterface;
     m_interface->m_engine = this;
     messageNegotiator = new MessageNegotiator;
-    m_levelGenerator = new LevelGenerator(m_interface);
+    m_levelGenerator = new LevelGenerator();
     m_collisionDetector = new CollisionDetector();
 
     doMath = false;
@@ -20,6 +21,11 @@ EngineBase::~EngineBase()
 EngineInterface *EngineBase::getInterface() const
 {
     return m_interface;
+}
+
+LevelGenerator *EngineBase::getLevelGenerator() const
+{
+    return m_levelGenerator;
 }
 
 void EngineBase::proceed(int uSecond, int dt)
@@ -46,7 +52,7 @@ void EngineBase::proceed(int uSecond, int dt)
     }
 
     if(doMath){
-        m_levelGenerator->proceed();
+        //m_levelGenerator->proceed();
         //proceed physical items
         for (auto c : m_objectControllers) {
             c.second->proceed(1000);

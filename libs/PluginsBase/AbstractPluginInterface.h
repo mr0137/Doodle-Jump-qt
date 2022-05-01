@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QVariantList>
 #include <enginebase.h>
+#include <engineinterface.h>
 #include "factories/sceneitemfactory.h"
 #include "factories/controllerfactory.h"
 
@@ -23,6 +24,7 @@ public:
     const QList<SceneItemFactory*> *getSceneItemFactories() { return &m_creators; }
     const QList<ControllerFactory*> *getControllerFactories() { return &m_controllers; }
     const QList<ControllerFactory*> *getCollideControllerFactories() { return &m_collideControllers; }
+    const QList<LevelObjectCreator*> *getLevelObjectCreators() { return &m_levelObjectCreators; }
     QHash<QString, QString> getResources() { return m_resources; }
 protected:
     template<typename Msg, typename Callable>
@@ -40,6 +42,7 @@ protected:
     QList<SceneItemFactory *> m_creators;
     QList<ControllerFactory *> m_controllers;
     QList<ControllerFactory *> m_collideControllers;
+    QList<LevelObjectCreator *> m_levelObjectCreators;
 };
 
 template<typename Msg, typename Callable>

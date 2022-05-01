@@ -21,6 +21,7 @@ public:
 
     void addControllerFactories(const QList<ControllerFactory *> *value);
     void addCollideControllerFactories(const QList<ControllerFactory *> *value);
+    void addLevelObjectCreators(const QList<ControllerFactory *> *value);
 
 private:
     CreateItemMsgAns proceedCreateItemMsg(CreateItemMsg msg);

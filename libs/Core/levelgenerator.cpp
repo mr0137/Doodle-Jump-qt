@@ -1,12 +1,12 @@
 #include "levelgenerator.h"
 #include "engineinterface.h"
 
-LevelGenerator::LevelGenerator(EngineInterface *interface) : m_engineInterface(interface)
+LevelGenerator::LevelGenerator()
 {
 
 }
 
-void LevelGenerator::proceed()
+void LevelGenerator::proceed(Rect visualRect)
 {
     //static int i = 0;
     //if (i++ == 0)
@@ -19,4 +19,19 @@ void LevelGenerator::proceed()
     //    m_engineInterface->sendFromEngine(msg, 10);
 
     //}
+}
+
+void LevelGenerator::addCreators(const std::vector<LevelObjectCreator*> &list)
+{
+    m_creators = list;
+}
+
+void LevelGenerator::setCreateHandler(const std::function<uint32_t(std::string)> &createHandler)
+{
+    m_createHandler = createHandler;
+}
+
+void LevelGenerator::setDeleteHandler(const std::function<bool(uint32_t)> &deleteHandler)
+{
+    m_deleteHandler = deleteHandler;
 }

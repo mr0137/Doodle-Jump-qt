@@ -23,7 +23,7 @@ public:
     QString objectType;
 
 private:
-    static inline uint32_t m_type = 1;
+    const static uint32_t m_type = 1;
 };
 
 struct PLUGINSBASE_EXPORT CreateItemMsgAns : MessageBase
@@ -39,7 +39,7 @@ public:
     QString objectType;
 
 private:
-     static inline uint32_t m_messageType = 2;
+     const static uint32_t m_messageType = 2;
 };
 
 #endif // CREATEITEMMESSAGE_H

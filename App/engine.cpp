@@ -67,6 +67,11 @@ void Engine::addCollideControllerFactories(const QList<ControllerFactory *> *val
     }
 }
 
+void Engine::addLevelObjectCreators(const QList<ControllerFactory *> *value)
+{
+
+}
+
 CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
 {
     QString type = msg.objectType;

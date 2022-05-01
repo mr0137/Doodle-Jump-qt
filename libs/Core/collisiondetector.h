@@ -14,16 +14,6 @@ enum class CollisionType : uint8_t
     RIGHT = 0x08
 };
 
-//uint8_t operator&(CollisionType type1, CollisionType type2)
-//{
-//    return static_cast<uint8_t>(type1) &  static_cast<uint8_t>(type2);
-//}
-//
-//uint8_t operator==(uint8_t type1, CollisionType type2)
-//{
-//    return static_cast<uint8_t>(type1) == static_cast<uint8_t>(type2);
-//}
-
 class CollisionDetector
 {
 public:

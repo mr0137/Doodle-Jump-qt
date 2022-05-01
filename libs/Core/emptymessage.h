@@ -13,6 +13,6 @@ struct CORE_EXPORT EmptyMessage : public MessageBase
     void deserialize(QDataStream *) override {}
 
 private:
-    static inline uint32_t m_type = 0;
+   const static uint32_t m_type = 0;
 };
 #endif // EMPTYMESSAGE_H

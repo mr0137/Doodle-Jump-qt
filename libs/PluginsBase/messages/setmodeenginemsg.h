@@ -21,7 +21,7 @@ public:
     EngineMode mode;
 
 private:
-     static inline uint32_t m_messageType = 12;
+     const static uint32_t m_messageType = 12;
 };
 
 struct PLUGINSBASE_EXPORT SetModeEngineMsgAns : public MessageBase
@@ -37,7 +37,7 @@ public:
     EngineMode mode;
 
 private:
-     static inline uint32_t m_messageType = 11;
+     const static uint32_t m_messageType = 11;
 };
 
 #endif // STARTENGINEMSG_H
