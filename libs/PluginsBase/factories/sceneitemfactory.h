@@ -1,16 +1,16 @@
-#ifndef SCENEITEMSFACTORY_H
-#define SCENEITEMSFACTORY_H
+#ifndef SCENEITEMFACTORY_H
+#define SCENEITEMFACTORY_H
 
 #include <QObject>
-#include <pluginsbase_global.h>
-#include <base/sceneitem.h>
 #include <QVariantMap>
+#include <pluginsbase_global.h>
+#include "base/sceneitem.h"
 
-class PLUGINSBASE_EXPORT SceneItemsFactory : public QObject
+class PLUGINSBASE_EXPORT SceneItemFactory : public QObject
 {
     Q_OBJECT
 public:
-    SceneItemsFactory(QString type, std::function<SceneItem*()> cr) : m_creator(cr), m_type(type) {}
+    SceneItemFactory(QString type, std::function<SceneItem*()> creator) : m_creator(creator), m_type(type) {}
     QString type() { return m_type;}
     SceneItem *create(QVariantMap params){ auto item = m_creator(); setParams(item, params); return item; }
 private:
@@ -40,4 +40,4 @@ private:
     QString m_type;
 };
 
-#endif // SCENEITEMSFACTORY_H
+#endif // SCENEITEMFACTORY_H

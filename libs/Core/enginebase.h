@@ -25,23 +25,25 @@ public:
     virtual void start() = 0;
     virtual void stop() = 0;
 
-    int lastCreatedPIID;
-
     unsigned long long engineTime() const;
     std::vector<std::function<void()>> oneSecondCallbacks;
 
-    std::map<uint32_t, AbstractObjectController *> & getPiControllers();
+    const std::map<uint32_t, AbstractObjectController *> *getPiControllers();
 
 protected:
     void proceed(int uSecond, int dt);
-    bool removeController(int id);
-    void insertController(int id, AbstractObjectController *c);
+    bool removeController(uint32_t id);
+    void insertController(uint32_t id, AbstractObjectController *c);
     QByteArray proceedItemMsg(MessageHeader header, QDataStream &s);
 
+protected:
+    int lastCreatedPIID = 0;
     std::map<uint32_t, AbstractObjectController*> m_objectControllers;
+    std::map<uint32_t, AbstractObjectController*> m_collideObjectControllers;
     MessageNegotiator *messageNegotiator;
     EngineInterface *m_interface;
     LevelGenerator *m_levelGenerator;
+    CollisionDetector *m_collisionDetector;
     bool doMath;
 
 private:

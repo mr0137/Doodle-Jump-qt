@@ -4,39 +4,31 @@ QT += core
 TEMPLATE = lib
 DEFINES += CORE_LIBRARY
 
-CONFIG += c++17
+CONFIG += c++20
 
 SOURCES += \
     abstractobjectcontroller.cpp \
-    basemovecontroller.cpp \
     circlebuffer.cpp \
-    createitemmessage.cpp \
+    collisiondetector.cpp \
     emptymessage.cpp \
     enginebase.cpp \
     engineinterface.cpp \
-    itemsfactory.cpp \
     levelgenerator.cpp \
     messageanswerdispatcher.cpp \
     messageheader.cpp \
-    messagenegotiator.cpp \
-    removeitemmessage.cpp \
-    setmodeenginemsg.cpp
+    messagenegotiator.cpp
 
 HEADERS += \
     abstractobjectcontroller.h \
-    basemovecontroller.h \
     circlebuffer.h \
+    collisiondetector.h \
     core_global.h \
-    createitemmessage.h \
     emptymessage.h \
     enginebase.h \
     engineinterface.h \
     imessage.h \
-    itemsfactory.h \
     levelgenerator.h \
     messageanswerdispatcher.h \
     messageheader.h \
-    messagenegotiator.h \
-    removeitemmessage.h \
-    setmodeenginemsg.h
+    messagenegotiator.h
 

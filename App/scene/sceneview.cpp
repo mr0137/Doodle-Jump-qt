@@ -56,6 +56,12 @@ void SceneView::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeom
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
 }
 
+void SceneView::keyPressEvent(QKeyEvent *event)
+{
+
+    QQuickItem::keyPressEvent(event);
+}
+
 Scene *SceneView::scene() const
 {
     return m_scene;

@@ -45,14 +45,19 @@ const QString &SceneItem::imagePath() const
     return m_imagePath;
 }
 
-SceneItem::RemovingState SceneItem::removeState()
+void SceneItem::setRemovingState(RemovingState newState)
 {
-    return m_removingState;
+    m_removingState = newState;
 }
 
 QRectF SceneItem::boundingRect() const
 {
     return QRectF(m_x, m_y, m_width, m_height);
+}
+
+SceneItem::RemovingState SceneItem::removingState()
+{
+    return m_removingState;
 }
 
 void SceneItem::setId(uint32_t newId)
@@ -77,4 +82,17 @@ void SceneItem::setY(double newY)
         return;
     m_y = newY;
     emit yChanged();
+}
+
+bool SceneItem::movable() const
+{
+    return m_movable;
+}
+
+void SceneItem::setMovable(bool newMovable)
+{
+    if (m_movable == newMovable)
+        return;
+    m_movable = newMovable;
+    emit movableChanged();
 }

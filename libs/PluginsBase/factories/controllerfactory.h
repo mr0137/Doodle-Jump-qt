@@ -9,10 +9,12 @@ class PLUGINSBASE_EXPORT ControllerFactory : public QObject
 {
     Q_OBJECT
 public:
-    ControllerFactory(std::function<AbstractObjectController*()> cr): m_creator(cr) {}
+    ControllerFactory(QString type, std::function<AbstractObjectController*()> cr): m_creator(cr), m_type(type) {}
     AbstractObjectController *create(){ return m_creator();  }
+    QString type() const { return m_type; }
 private:
     std::function<AbstractObjectController*()> m_creator = nullptr;
+    QString m_type;
 };
 
 #endif // CONTROLLERFACTORY_H

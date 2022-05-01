@@ -10,6 +10,11 @@ AbstractObjectController::~AbstractObjectController()
     delete m_negotiator;
 }
 
+Rect AbstractObjectController::getBoundingRect()
+{
+    return m_boundingRect;
+}
+
 void AbstractObjectController::setPiId(int value)
 {
     m_id = value;
@@ -18,6 +23,11 @@ void AbstractObjectController::setPiId(int value)
 void AbstractObjectController::setEngineBase(EngineBase *value)
 {
     m_engine = value;
+}
+
+CollisionType AbstractObjectController::getCollisionType()
+{
+    return m_collisionType;
 }
 
 QByteArray AbstractObjectController::proceedMsg(MessageHeader* header, QDataStream &stream)

@@ -4,7 +4,10 @@
 #include <QObject>
 #include <QQmlEngine>
 
-#include <scene/scene.h>
+#include "scene/scene.h"
+
+class Engine;
+class PluginLoader;
 
 class AppCore : public QObject
 {
@@ -17,13 +20,20 @@ public:
 
     Scene *scene() const;
     void setScene(Scene *newScene);
+    void setEngine(Engine* engine);
+    void init(QString appPath);
+
 public slots:
     void start();
 signals:
     void sceneChanged();
+private:
+    void load(QObject* pluginInstance);
 
 private:
     Scene *m_scene = nullptr;
+    Engine *m_engine = nullptr;
+    PluginLoader *m_pluginLoader = nullptr;
 };
 
 #endif // APPCORE_H

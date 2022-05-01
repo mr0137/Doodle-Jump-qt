@@ -152,7 +152,7 @@ void EngineInterface::installStreamMsg(std::function<void(Msg, uint32_t)> lambda
         lambda(msg, itemId);
         return msg.getType();
     };
-    msgFromEngineBaseHandlers.insert({type, funcTobeCalled});
+    msgFromEngineBaseHandlers.emplace(type, funcTobeCalled);
 }
 
 #endif // ENGINEINTERFACE_H

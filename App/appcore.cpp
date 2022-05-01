@@ -1,14 +1,14 @@
 #include "appcore.h"
+#include "engine.h"
+#include <AbstractPluginInterface.h>
 #include <QGuiApplication>
-
-#include "slabdefault.h"
+#include <tools/pluginloader.h>
 
 AppCore::AppCore(QObject *parent)
     : QObject{parent},
       m_scene(new Scene(this))
 {
-    auto testFactory = new SceneItemsFactory("SlabDefault", []() -> SceneItem*{ return new SlabDefault(); });
-    m_scene->addFactory({testFactory});
+
 }
 
 AppCore *AppCore::getInstance()
@@ -41,7 +41,53 @@ void AppCore::setScene(Scene *newScene)
     emit sceneChanged();
 }
 
+void AppCore::setEngine(Engine *engine)
+{
+    m_engine = engine;
+}
+
+void AppCore::init(QString appPath)
+{
+    QString result = appPath;
+
+#ifdef Q_OS_LINUX
+    int times = 3;
+#endif
+#ifdef Q_OS_WINDOWS
+    int times = 4;
+#endif
+
+    while(times > 0 && !result.isEmpty()){
+#ifdef Q_OS_LINUX
+        if (result.endsWith("/")) times--;
+#endif
+#ifdef Q_OS_WINDOWS
+        if (result.endsWith("\\")) times--;
+#endif
+        result.chop(1);
+    }
+    m_pluginLoader = new PluginLoader(result, this);
+
+    m_pluginLoader->load("CorePlugin");
+}
+
 void AppCore::start()
 {
     m_scene->startTest();
+}
+
+void AppCore::load(QObject *pluginInstance)
+{
+    if (m_engine != nullptr)
+    {
+        return;
+    }
+
+    auto pluginInterface = reinterpret_cast<AbstractPluginInterface*>(pluginInstance);
+
+    if (pluginInterface)
+    {
+        m_engine->addCollideControllerFactories(pluginInterface->getControllerFactories());
+        m_scene->addFactory(pluginInterface->getSceneItemFactories());
+    }
 }

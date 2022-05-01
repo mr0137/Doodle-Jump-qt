@@ -6,6 +6,7 @@ EngineBase::EngineBase()
     m_interface->m_engine = this;
     messageNegotiator = new MessageNegotiator;
     m_levelGenerator = new LevelGenerator(m_interface);
+    m_collisionDetector = new CollisionDetector();
 
     doMath = false;
 }
@@ -50,6 +51,8 @@ void EngineBase::proceed(int uSecond, int dt)
         for (auto c : m_objectControllers) {
             c.second->proceed(1000);
         }
+
+
         if(!(m_engineTime % 1000000))
             for(auto && fn : oneSecondCallbacks)
                 fn();
@@ -59,16 +62,22 @@ void EngineBase::proceed(int uSecond, int dt)
     }
 }
 
-void EngineBase::insertController(int id, AbstractObjectController * c)
+void EngineBase::insertController(uint32_t id, AbstractObjectController * c)
 {
-    m_objectControllers.insert({id, c});
+    m_objectControllers.emplace(id, c);
 }
 
-bool EngineBase::removeController(int id)
+bool EngineBase::removeController(uint32_t id)
 {
-    AbstractObjectController * p = m_objectControllers[id];
-    delete p;
-    m_objectControllers.erase(id);
+    auto iter = m_objectControllers.find(id);
+    if (iter == m_objectControllers.end())
+    {
+        return false;
+    }
+
+    delete iter->second;
+    m_objectControllers.erase(iter);
+
     return true;
 }
 
@@ -82,9 +91,9 @@ QByteArray EngineBase::proceedItemMsg(MessageHeader header, QDataStream &s)
     return nullptr;
 }
 
-std::map<uint32_t, AbstractObjectController *> &EngineBase::getPiControllers()
+const std::map<uint32_t, AbstractObjectController *> *EngineBase::getPiControllers()
 {
-    return m_objectControllers;
+    return &m_objectControllers;
 }
 
 unsigned long long EngineBase::engineTime() const

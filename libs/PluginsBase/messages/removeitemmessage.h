@@ -3,10 +3,10 @@
 
 #include <imessage.h>
 #include <vector>
-#include <core_global.h>
+#include <pluginsbase_global.h>
 #include <QDataStream>
 
-struct CORE_EXPORT RemoveItemMessage : MessageBase
+struct PLUGINSBASE_EXPORT RemoveItemMessage : MessageBase
 {
     uint32_t getType() const override { return m_messageType; }
     static bool checkType(uint32_t type) { return type == m_messageType; }
@@ -21,7 +21,7 @@ private:
      static inline uint32_t m_messageType = 3;
 };
 
-struct CORE_EXPORT RemoveItemMessageAns : MessageBase
+struct PLUGINSBASE_EXPORT RemoveItemMessageAns : MessageBase
 {
     uint32_t getType() const override { return m_messageType; }
     static bool checkType(uint32_t type) { return type == m_messageType; }

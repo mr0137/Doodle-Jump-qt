@@ -6,15 +6,15 @@
 
 using namespace std::chrono_literals;
 
-Engine::Engine(QObject *parent) : QObject(parent), lastCreatedPIID(0)
+Engine::Engine(QObject *parent) : QObject(parent)
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, [this](){
         m_interface->proceed();
     });
 
-    //messageNegotiator->registerMsgHandler(&Engine::proceedCreateItemMsg, this);
-    //messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
+    messageNegotiator->registerMsgHandler(&Engine::proceedCreateItemMsg, this);
+    messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
     messageNegotiator->registerMsgHandler(&Engine::proceedSetEngineModeMsg, this);
 }
 
@@ -48,21 +48,53 @@ void Engine::stop()
 {
     working = false;
     future.cancel();
+    future.waitForFinished();
+}
+
+void Engine::addControllerFactories(const QList<ControllerFactory *> *value)
+{
+    for (auto* controller : *value)
+    {
+        m_objectControllerFactories.insert(controller->type(), controller);
+    }
+}
+
+void Engine::addCollideControllerFactories(const QList<ControllerFactory *> *value)
+{
+    for (auto* controller : *value)
+    {
+        m_collideControllerFactories.insert(controller->type(), controller);
+    }
 }
 
 CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
 {
     QString type = msg.objectType;
-    CreateItemMsgAns answ;
 
-    AbstractObjectController *controller = controllers[type]->create();
-    controller->setPiId(this->lastCreatedPIID);
+    CreateItemMsgAns answ;
+    answ.objectType = msg.objectType;
+    answ.id = -1;
+
+    ControllerFactory* factory = nullptr;
+    factory = *m_objectControllerFactories.find(type);
+    if (factory == nullptr)
+    {
+       factory = *m_collideControllerFactories.find(type);
+    }
+
+     if (factory == nullptr)
+     {
+         return answ;
+     }
+
+    AbstractObjectController *controller = factory->create();
+    lastCreatedPIID++;
+    controller->setPiId(lastCreatedPIID);
     qDebug() << msg.objectType << lastCreatedPIID;
     controller->init(&msg, this);
 
-    this->insertController(this->lastCreatedPIID, controller);
-    answ.id = this->lastCreatedPIID;
-    lastCreatedPIID++;
+    insertController(lastCreatedPIID, controller);
+    answ.id = lastCreatedPIID;
     return answ;
 }
 
@@ -82,23 +114,28 @@ RemoveItemMessageAns Engine::proceedRemoveItemMsg(RemoveItemMessage msg)
 SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
 {
     if(msg.mode == START)
+    {
         this->doMath = true;
-    if(msg.mode == PAUSE || msg.mode == RESET)
+    }
+
+    if(msg.mode == PAUSE || msg.mode == STOP)
+    {
         this->doMath = false;
-    if(msg.mode == RESET) {
-        for (auto p : m_objectControllers) {
+    }
+
+    if(msg.mode == STOP)
+    {
+        for (auto p : m_objectControllers)
+        {
             delete p.second;
         }
         m_objectControllers.clear();
+        lastCreatedPIID = -1;
     }
+
     SetModeEngineMsgAns msgAnswer;
     msgAnswer.modeChangedSuccess = true;
     msgAnswer.mode = msg.mode;
     return msgAnswer;
-}
-
-void Engine::setControllers(const QHash<QString, ControllerFactory *> &value)
-{
-    controllers = value;
 }
 

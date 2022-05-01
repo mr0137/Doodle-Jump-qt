@@ -18,17 +18,19 @@ int main(int argc, char *argv[])
     auto coreEngine = new Engine();
     //! [additional]
 
-    QObject::connect(&app, &QGuiApplication::aboutToQuit, coreEngine, &Engine::stop);
-    coreEngine->start();
+    QObject::connect(&app, &QGuiApplication::aboutToQuit, &app, [&](){
+        coreEngine->stop();
+        delete coreEngine;
+    });
 
     auto ei = coreEngine->getInterface();
     qmlRegisterType<QObject>("KLib", 1, 0, "Null");
 
+    AppCore::getInstance()->init(QString(argv[0]));
+    AppCore::getInstance()->setEngine(coreEngine);
     AppCore::getInstance()->scene()->setEngineInterface(ei);
 
     QQmlApplicationEngine appEngine;
-    //auto engine = static_cast<QQmlEngine*>(&appEngine);
-
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&appEngine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -36,6 +38,8 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     appEngine.load(url);
+
+    coreEngine->start();
 
     return app.exec();
 }

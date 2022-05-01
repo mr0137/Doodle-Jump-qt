@@ -6,25 +6,19 @@
 #include <QPluginLoader>
 #include <QString>
 #include <QUrl>
+#include <pluginsbase_global.h>
 
-static QObject* pluginloader(QString libname, QString appPath){
-    auto d = QDir::current();
-#ifdef QT_NO_DEBUG
-    d.cd( appPath + "/plugins/" + libname + "/");
-#else
-    d.cd( appPath + "/bin/plugins/" + libname + "/");
-#endif
-#ifdef WIN64
-    QString path = QUrl(d.absolutePath() + "/" + libname + ".dll").path();
-#else
-    QString path = QUrl(d.absolutePath() + "/lib" + libname + ".so").path();
-#endif
-    QPluginLoader qmlPlugin(path);
-    qmlPlugin.load();
-    if (!qmlPlugin.isLoaded()) {
-        qDebug() << "ERROR while opening plugin: " << qmlPlugin.errorString() << path;
-    }
-    return qmlPlugin.instance();
+class PLUGINSBASE_EXPORT PluginLoader : public QObject
+{
+    Q_OBJECT
+public:
+    PluginLoader(const QString &appPath, QObject *parent = nullptr);
+    QObject* load(QString libname);
+    bool unload(const QString &name);
+private:
+    QString m_appPath;
+    QHash<QString, QPluginLoader*> m_instancesRegistry;
 };
+
 
 #endif // PLUGINLOADER_H

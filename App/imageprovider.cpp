@@ -9,19 +9,20 @@ ImageProvider::ImageProvider(QObject *parent)
 
 ImageProvider::~ImageProvider()
 {
-    QStringList keys = m_images.keys();
+    QStringList keys = m_imagesId.keys();
 
     for (const auto &key : keys)
     {
-        auto image = m_images[key];
-        m_images.remove(key);
+        auto image = m_imagesId[key];
+        m_imagesId.remove(key);
         delete image;
     }
+    m_imagesPath.clear();
 }
 
 void ImageProvider::registerImage(QString id, QString path, double imageWidth, double imageHeight)
 {
-    if (m_images.contains(id))
+    if (m_imagesId.contains(id))
     {
         qDebug() << "Cannot register image: id already exist!";
         return;
@@ -41,14 +42,15 @@ void ImageProvider::registerImage(QString id, QString path, double imageWidth, d
         image->scaledToWidth(imageWidth, Qt::SmoothTransformation);
     }
 
-    m_images.insert(id, image);
+    m_imagesPath.insert(path, image);
+    m_imagesId.insert(id, image);
 }
 
 QImage *ImageProvider::getImage(QString id)
 {
-    if (m_images.keys().contains(id))
+    if (m_imagesId.keys().contains(id))
     {
-        return m_images[id];
+        return m_imagesId[id];
     }
     return nullptr;
 }

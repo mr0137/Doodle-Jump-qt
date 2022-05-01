@@ -4,7 +4,7 @@ QT += quickwidgets
 QT += quick
 QT += concurrent
 QT += gui-private
-CONFIG += c++17
+CONFIG += c++20
 
 SOURCES += \
     appcore.cpp \
@@ -14,8 +14,7 @@ SOURCES += \
     scene/background/backgroundgrid.cpp \
     scene/background/backgroundnoise.cpp \
     scene/scene.cpp \
-    scene/sceneview.cpp \
-    slabdefault.cpp
+    scene/sceneview.cpp
 
 RESOURCES += resources/qml.qrc
 
@@ -28,8 +27,7 @@ HEADERS += \
     scene/background/backgroundgrid.h \
     scene/background/backgroundnoise.h \
     scene/scene.h \
-    scene/sceneview.h \
-    slabdefault.h
+    scene/sceneview.h
 
 CONFIG(release, debug|release){
 DEFINES += QT_NO_DEBUG_OUTPUT

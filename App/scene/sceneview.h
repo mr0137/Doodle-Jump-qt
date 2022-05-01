@@ -20,6 +20,7 @@ signals:
 protected:
     QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) override;
+    void keyPressEvent(QKeyEvent *event) override;
 private:
     Scene* m_scene = nullptr;
     bool m_geometryChanged = true;

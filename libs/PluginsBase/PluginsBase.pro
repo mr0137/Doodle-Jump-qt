@@ -3,7 +3,7 @@ TARGET = pluginsbase
 QT -= gui
 QT += quick
 QT += core
-CONFIG += c++17
+CONFIG += c++20
 CONFIG += shared dll
 
 CONFIG(release, debug|release){
@@ -15,20 +15,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += PLUGINSBASE_LIBRARY
 SOURCES += \
         base/scenebase.cpp \
-        engine/messages/changecoordsmsg.cpp \
         factories/controllerfactory.cpp \
-        factories/sceneitemsfactory.cpp \
-        iphysicalitem.cpp \
+        factories/sceneitemfactory.cpp \
         base/sceneitem.cpp \
         AbstractPluginInterface.cpp \
-        tools/globalconfig.cpp
+        messages/changecoordsmsg.cpp \
+        messages/createitemmessage.cpp \
+        messages/removeitemmessage.cpp \
+        messages/setmodeenginemsg.cpp \
+        tools/globalconfig.cpp \
+        tools/pluginloader.cpp
 
 HEADERS += \
         base/scenebase.h \
-        engine/messages/changecoordsmsg.h \
         factories/controllerfactory.h \
-        factories/sceneitemsfactory.h \
-        iphysicalitem.h \
+        factories/sceneitemfactory.h \
+        messages/changecoordsmsg.h \
+        messages/createitemmessage.h \
+        messages/removeitemmessage.h \
+        messages/setmodeenginemsg.h \
         pluginsbase_global.h \
         tools/globalconfig.h \
         base/sceneitem.h \

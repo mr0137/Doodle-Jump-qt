@@ -14,6 +14,7 @@ class PLUGINSBASE_EXPORT SceneItem : public QObject
     Q_PROPERTY(uint32_t id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(double x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(double y READ y WRITE setY NOTIFY yChanged)
+    Q_PROPERTY(bool movable READ movable WRITE setMovable NOTIFY movableChanged)
 public:
     explicit SceneItem(QObject *parent = nullptr);
 
@@ -36,22 +37,24 @@ public:
         READY
     };
 
-    RemovingState removeState();
+    RemovingState removingState();
+    void setRemovingState(RemovingState newState);
 
     void setX(double newX);
-
     void setY(double newY);
+
+    bool movable() const;
+    void setMovable(bool newMovable);
 
 signals:
     void idChanged();
-
     void xChanged();
-
     void yChanged();
+
+    void movableChanged();
 
 protected:
     QString m_type = "SceneItem";
-    int m_sceneID;
     uint32_t m_id;
     double m_x;
     double m_y;
@@ -60,6 +63,7 @@ protected:
     QString m_imagePath;
     RemovingState m_removingState = NONE;
     QRectF m_boundingRect;
+    bool m_movable = false;
 };
 
 #endif // SCENEITEM_H
