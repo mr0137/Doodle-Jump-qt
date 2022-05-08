@@ -40,12 +40,15 @@ void EngineBase::proceed(int uSecond, int dt)
         stream >> msgMessageHeader;
 
         QByteArray answ;
-        if (msgMessageHeader.itemId == -1) { //msg for controller
+        if (msgMessageHeader.itemId == -1)
+        { //msg for controller
             answ = messageNegotiator->proceedMsg(&msgMessageHeader, stream);
-
-        } else { //global msg
+        }
+        else
+        { //global msg
             answ = proceedItemMsg(msgMessageHeader, stream);
         }
+
         if (answ.size() > 0) {
             m_interface->_pushAnswerEngineSide(answ, &msgMessageHeader);
         }
@@ -54,15 +57,19 @@ void EngineBase::proceed(int uSecond, int dt)
     if(doMath){
         //m_levelGenerator->proceed();
         //proceed physical items
-        for (auto c : m_objectControllers) {
+        for (auto c : m_objectControllers)
+        {
             c.second->proceed(1000);
         }
 
 
         if(!(m_engineTime % 1000000))
+        {
             for(auto && fn : oneSecondCallbacks)
+            {
                 fn();
-
+            }
+        }
         m_engineTime += 1000; // uSecond
         prevTime_us = uSecond;
     }
@@ -89,8 +96,10 @@ bool EngineBase::removeController(uint32_t id)
 
 QByteArray EngineBase::proceedItemMsg(MessageHeader header, QDataStream &s)
 {
-    for (auto c : m_objectControllers) {
-        if (c.second->getPiId() == header.itemId) {
+    for (auto c : m_objectControllers)
+    {
+        if (c.second->getPiId() == header.itemId)
+        {
             return c.second->proceedMsg(&header, s);
         }
     }

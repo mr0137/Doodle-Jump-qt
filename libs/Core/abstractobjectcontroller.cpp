@@ -10,7 +10,7 @@ AbstractObjectController::~AbstractObjectController()
     delete m_negotiator;
 }
 
-Rect AbstractObjectController::getBoundingRect()
+QRect AbstractObjectController::getBoundingRect()
 {
     return m_boundingRect;
 }

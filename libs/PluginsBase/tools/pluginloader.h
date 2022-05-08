@@ -13,6 +13,7 @@ class PLUGINSBASE_EXPORT PluginLoader : public QObject
     Q_OBJECT
 public:
     PluginLoader(const QString &appPath, QObject *parent = nullptr);
+    ~PluginLoader();
     QObject* load(QString libname);
     bool unload(const QString &name);
 private:

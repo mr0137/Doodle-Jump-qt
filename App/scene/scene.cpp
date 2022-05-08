@@ -34,7 +34,7 @@ void Scene::setEngineInterface(EngineInterface *ei)
 
         ei->installStreamMsg<CreateItemMsg>([this](CreateItemMsg msg, uint32_t itemId){
             QMutexLocker locker(m_mutex);
-            addItem(QPointF(msg.x, msg.y), msg.objectType, itemId);
+            addItem(QPoint(msg.x, msg.y), msg.objectType, itemId);
         });
 
         ei->installStreamMsg<RemoveItemMessage>([this](RemoveItemMessage msg, uint32_t itemId){
@@ -68,7 +68,7 @@ void Scene::startTest()
     });
 }
 
-SceneItem *Scene::addItem(QPointF pos, QString objectType, uint32_t id)
+SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id)
 {
     SceneItem * item = nullptr;
     auto type = objectType;
@@ -89,7 +89,7 @@ SceneItem *Scene::addItem(QPointF pos, QString objectType, uint32_t id)
 
 SceneItem *Scene::addItem(double x, double y, QString objectType, uint32_t id)
 {
-    return addItem(QPointF(x, y), objectType, id);
+    return addItem(QPoint(x, y), objectType, id);
 }
 
 void Scene::removeItem(SceneItem *item)

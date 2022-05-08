@@ -12,8 +12,10 @@ EngineInterface::~EngineInterface()
     delete answerDispatcher;
 }
 
-void EngineInterface::proceed() {
-    while (true) {
+void EngineInterface::proceed()
+{
+    while (true)
+    {
         auto bA = fromEngineBase.pop();
         if (bA.size() < 4) break; //no message to proceed
         QDataStream s(bA);
@@ -21,11 +23,15 @@ void EngineInterface::proceed() {
         s >> h;
         //proceed answer
         int pos = s.device()->pos();
-        if (h.isAnswer) {
+        if (h.isAnswer)
+        {
             answerDispatcher->proceedMsgAnswer(h, s);
-        } else {
+        }
+        else
+        {
             auto search = msgFromEngineBaseHandlers.find(h.type);
-            if(search != msgFromEngineBaseHandlers.end()){
+            if(search != msgFromEngineBaseHandlers.end())
+            {
                 search->second(s, h.itemId);
             }
         }
@@ -42,13 +48,3 @@ void EngineInterface::_pushAnswerEngineSide(const QByteArray & msg, MessageHeade
     data.append(msg);
     fromEngineBase.push(data);
 }
-
-
-
-
-
-
-
-
-
-

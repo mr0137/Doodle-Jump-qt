@@ -30,10 +30,12 @@ void Engine::start()
         const int delay = 1000; // microsec
         auto start = std::chrono::system_clock::now();
         auto last = std::chrono::system_clock::now();
-        while (this->working) {
+        while (this->working)
+        {
             auto now = std::chrono::system_clock::now();
             auto dt = std::chrono::duration_cast<std::chrono::microseconds>(now - last).count();
-            if (dt > delay) {
+            if (dt > delay)
+            {
                 auto t1 = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start).count();
                 proceed(t1, dt);
                 last = now;
@@ -78,28 +80,9 @@ CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
 
     CreateItemMsgAns answ;
     answ.objectType = msg.objectType;
-    answ.id = -1;
+    answ.id = createObject(type, {msg.x, msg.y});
 
-    ControllerFactory* factory = nullptr;
-    factory = *m_objectControllerFactories.find(type);
-    if (factory == nullptr)
-    {
-       factory = *m_collideControllerFactories.find(type);
-    }
-
-     if (factory == nullptr)
-     {
-         return answ;
-     }
-
-    AbstractObjectController *controller = factory->create();
-    lastCreatedPIID++;
-    controller->setPiId(lastCreatedPIID);
     qDebug() << msg.objectType << lastCreatedPIID;
-    controller->init(&msg, this);
-
-    insertController(lastCreatedPIID, controller);
-    answ.id = lastCreatedPIID;
     return answ;
 }
 
@@ -142,5 +125,29 @@ SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
     msgAnswer.modeChangedSuccess = true;
     msgAnswer.mode = msg.mode;
     return msgAnswer;
+}
+
+uint32_t Engine::createObject(QString type, QPoint pos)
+{
+    ControllerFactory* factory = nullptr;
+    factory = *m_objectControllerFactories.find(type);
+    if (factory == nullptr)
+    {
+        factory = *m_collideControllerFactories.find(type);
+    }
+
+    if (factory == nullptr)
+    {
+        return -1;
+    }
+
+    AbstractObjectController *controller = factory->create();
+    lastCreatedPIID++;
+    controller->setPiId(lastCreatedPIID);
+
+    controller->init(pos);
+
+    insertController(lastCreatedPIID, controller);
+    return lastCreatedPIID;
 }
 

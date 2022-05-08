@@ -5,6 +5,15 @@ PluginLoader::PluginLoader(const QString &appPath, QObject *parent) : QObject(pa
 
 }
 
+PluginLoader::~PluginLoader()
+{
+    for (const auto &name : m_instancesRegistry.keys())
+    {
+        unload(name);
+    }
+    m_instancesRegistry.clear();
+}
+
 QObject *PluginLoader::load(QString libname)
 {
     auto d = QDir::current();
@@ -20,8 +29,14 @@ QObject *PluginLoader::load(QString libname)
 #endif
     auto plugin = new QPluginLoader(path);
     plugin->load();
-    if (!plugin->isLoaded()) {
+    if (!plugin->isLoaded())
+    {
         qDebug() << "ERROR while opening plugin: " << plugin->errorString() << path;
+    }
+
+    if (plugin)
+    {
+        m_instancesRegistry[libname] = plugin;
     }
     return plugin->instance();
 }

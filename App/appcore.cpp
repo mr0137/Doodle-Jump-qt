@@ -92,8 +92,5 @@ void AppCore::load(QObject *pluginInstance)
     {
         m_engine->addCollideControllerFactories(pluginInterface->getControllerFactories());
         m_scene->addFactory(pluginInterface->getSceneItemFactories());
-        auto list = pluginInterface->getLevelObjectCreators();
-        auto v = std::vector<LevelObjectCreator*>(list->begin(), list->end());
-        m_engine->getLevelGenerator()->addCreators(v);
     }
 }

@@ -28,6 +28,9 @@ private:
     RemoveItemMessageAns proceedRemoveItemMsg(RemoveItemMessage msg);
     SetModeEngineMsgAns proceedSetEngineModeMsg(SetModeEngineMsg msg);
 
+    uint32_t createObject(QString type, QPoint pos);
+
+
 private:
     QHash<QString, ControllerFactory*> m_objectControllerFactories;
     QHash<QString, ControllerFactory*> m_collideControllerFactories;

@@ -2,26 +2,34 @@
 #define LEVELGENERATOR_H
 
 #include <QList>
+#include <QMap>
 #include <functional>
-#include "levelobjectcreator.h"
 #include "abstractobjectcontroller.h"
+#include "core_global.h"
 
 class EngineInterface;
 
-class LevelGenerator
+class CORE_EXPORT LevelGenerator
 {
 public:
     LevelGenerator();
-    void proceed(Rect visualRect);
-    void addCreators(const std::vector<LevelObjectCreator *> &list);
+    ~LevelGenerator();
+    void proceed(QRect visualRect);
+    void addGenerateableObjectsTypes(AbstractObjectController* objectTypes, ControllerType controllerType);
 
-    void setCreateHandler(const std::function<uint32_t(std::string)> &createHandler);
+    void setCreateHandler(const std::function<uint32_t(QString, QPoint)> &createHandler);
     void setDeleteHandler(const std::function<bool(uint32_t)> &deleteHandler);
-
 private:
-    std::function<uint32_t(std::string type)> m_createHandler = nullptr;
+    void createObject(QString type, QPoint pos);
+private:
+    std::function<uint32_t(QString type, QPoint)> m_createHandler = nullptr;
     std::function<bool(uint32_t)> m_deleteHandler = nullptr;
-    std::vector<LevelObjectCreator*> m_creators;
+
+    QList<AbstractObjectController*> m_creatableSlabObjects;
+    QList<AbstractObjectController*> m_creatableMonsterObjects;
+    QList<AbstractObjectController*> m_creatablePowerUPObjects;
+
+    QMap<uint32_t, AbstractObjectController*> m_createdControllers;
 };
 
 #endif // LEVELGENERATOR_H

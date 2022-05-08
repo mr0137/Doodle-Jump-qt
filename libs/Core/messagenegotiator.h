@@ -10,16 +10,13 @@
 class CORE_EXPORT MessageNegotiator
 {
 public:
-    MessageNegotiator();
     template<class Msg, class TClass, class TAns>
-    //!
-    //! \brief Registers handler to particular message
-    //! \param obj
-    //!
-    void registerMsgHandler(TAns (TClass::*m)(Msg), TClass *obj){
+    void registerMsgHandler(TAns (TClass::*m)(Msg), TClass *obj)
+    {
         int type = Msg().getType();
 
-        auto funcTobeCalled = [=](MessageHeader* h, QDataStream &s)->QByteArray {
+        auto funcTobeCalled = [=](MessageHeader* h, QDataStream &s) -> QByteArray
+        {
             //call handler
             Msg msg;
             msg.deserialize(&s);
@@ -38,13 +35,8 @@ public:
         msgHandlers.insert({type, funcTobeCalled});
     }
 
-    //!
-    //! \brief Executes callback when it is found in registered callbacks
-    //! \param h
-    //! \param s
-    //! \return QByteArray with answer
-    //!
-    QByteArray proceedMsg(MessageHeader* h, QDataStream &s){
+    QByteArray proceedMsg(MessageHeader* h, QDataStream &s)
+    {
         auto found = msgHandlers.find(h->type);
             if(found != msgHandlers.end()){
                 return found->second(h, s);

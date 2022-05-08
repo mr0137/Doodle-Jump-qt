@@ -6,6 +6,8 @@
 #include "core_global.h"
 #include "collisiondetector.h"
 
+#include <QRectF>
+
 enum class ControllerType
 {
     SLAB,
@@ -14,36 +16,6 @@ enum class ControllerType
     GHOST,      //multiplayer doodler
     BULLET,
     POWERUP
-};
-
-struct Rect
-{
-    Rect(int x, int y, int width, int height)
-    {
-        this->x = x;
-        this->y = y;
-        this->width = width;
-        this->height = height;
-    }
-
-    void changePos(int x, int y)
-    {
-        this->x = x;
-        this->y = y;
-    }
-
-    bool operator==(Rect& rect)
-    {
-        return this->x == rect.x &&
-                this->y == rect.y &&
-                this->width == rect.width &&
-                this->height == rect.height;
-    }
-
-    int x;
-    int y;
-    int width;
-    int height;
 };
 
 class EngineBase;
@@ -56,9 +28,9 @@ public:
 
     virtual void proceedCollision(ControllerType controllerType, CollisionType collisionType) = 0;
     virtual void proceed(double dt) = 0;
-    virtual void init(MessageBase * message, EngineBase *engine) = 0;
+    virtual void init(QPoint startPoint) = 0;
 
-    Rect getBoundingRect();
+    QRect getBoundingRect();
 
     QByteArray proceedMsg(MessageHeader *header, QDataStream &stream);
 
@@ -72,7 +44,7 @@ protected:
     uint32_t m_id;
     MessageNegotiator *m_negotiator;
 
-    Rect m_boundingRect = {0,0,0,0};
+    QRect m_boundingRect;
     CollisionType m_collisionType = CollisionType::NONE;
 };
 

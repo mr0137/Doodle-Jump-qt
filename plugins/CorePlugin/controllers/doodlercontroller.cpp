@@ -15,7 +15,7 @@ void DoodlerController::proceed(double dt)
 
 }
 
-void DoodlerController::init(MessageBase *message, EngineBase *engine)
+void DoodlerController::init(QPoint pos)
 {
 
 }

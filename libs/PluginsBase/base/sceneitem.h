@@ -3,7 +3,7 @@
 
 #include <qqml.h>
 #include <QObject>
-#include <QPointF>
+#include <QPoint>
 #include <QVariant>
 #include <pluginsbase_global.h>
 #include <QRectF>

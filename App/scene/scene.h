@@ -17,7 +17,7 @@ public:
     void startTest();
 
 protected:
-    SceneItem *addItem(QPointF pos, QString objectName, uint32_t id) override;
+    SceneItem *addItem(QPoint pos, QString objectName, uint32_t id) override;
     SceneItem *addItem(double x, double y, QString type, uint32_t id) override;
     void removeItem(SceneItem *item) override;
 
