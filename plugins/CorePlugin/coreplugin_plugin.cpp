@@ -13,14 +13,14 @@ void CorePlugin::registerTypes(const char *)
     // @uri SaveProvider
 }
 
-void CorePlugin::init(EngineBase *, QString appPath)
+void CorePlugin::init(QString appPath)
 {
     m_appPath = appPath;
 
     createControllerFactory<SlabController>();
     createObjectFactory<Slab>();
 
-    createControllerFactory<DoodlerController>();
+    createCollideControllerFactory<DoodlerController>();
     createObjectFactory<Doodler>();
 
     m_resources.insert("SlabDefault", "Slabdefault");

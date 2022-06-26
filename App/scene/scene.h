@@ -9,6 +9,7 @@
 class Scene : public SceneBase
 {
     Q_OBJECT
+    friend class SceneView;
 public:
     explicit Scene(QObject *parent = nullptr);
     void addFactory(const QList<SceneItemFactory *> *factories) override;

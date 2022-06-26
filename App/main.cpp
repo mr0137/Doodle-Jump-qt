@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<SceneView>("App", 1, 0, "SceneView");
 
     QObject::connect(&app, &QGuiApplication::aboutToQuit, &app, [&](){
-
+        AppCore::getInstance()->stop();
     });
 
     //auto ei = coreEngine->getInterface();

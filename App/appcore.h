@@ -8,6 +8,7 @@
 
 class Engine;
 class PluginLoader;
+class AbstractPluginInterface;
 
 class AppCore : public QObject
 {
@@ -25,10 +26,11 @@ public:
 
 public slots:
     void start();
+    void stop();
 signals:
     void sceneChanged();
 private:
-    void load(QObject* pluginInstance);
+    void load(AbstractPluginInterface *pluginInstance);
 
 private:
     Scene *m_scene = nullptr;

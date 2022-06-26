@@ -17,7 +17,7 @@ public:
     AbstractPluginInterface() {}
     virtual ~AbstractPluginInterface() {}
 
-    virtual void init(EngineBase * engine, QString appPath = "") = 0;
+    virtual void init(QString appPath = "") = 0;
 
     QString typeName() { return m_typeName; }
     //TODO: rewrite to shared_ptr
@@ -34,6 +34,29 @@ protected:
 
     template<class T>
     void createControllerFactory();
+
+    template<class T>
+    void createCollideControllerFactory();
+
+private:
+    //replace the '13SomeName' to 'SomeName'
+    inline QString className(const QString &name)
+    {
+        QString result;
+        bool digitsEnds = false;
+        for (const auto &c : name)
+        {
+            if (!c.isDigit() || digitsEnds)
+            {
+                result += c;
+            }
+            if (!c.isDigit())
+            {
+                digitsEnds = true;
+            }
+        }
+        return result;
+    }
 
 protected:
     QString m_typeName;
@@ -55,15 +78,22 @@ void AbstractPluginInterface::registerPluginEngineCallback(EngineBase * engine, 
 template<class T>
 void AbstractPluginInterface::createObjectFactory()
 {
-    auto factory = new SceneItemFactory(typeid(T).name(), []()->SceneItem*{ return new T();});
+    auto factory = new SceneItemFactory(className(typeid(T).name()), []()->SceneItem*{ return new T();});
     m_creators.push_back(factory);
 }
 
 template<class T>
 void AbstractPluginInterface::createControllerFactory()
 {
-    auto factory = new ControllerFactory(typeid(T).name(), []()->AbstractObjectController*{ return new T();});
+    auto factory = new ControllerFactory(className(typeid(T).name()), []()->AbstractObjectController*{ return new T();});
     m_controllers.push_back(factory);
+}
+
+template<class T>
+void AbstractPluginInterface::createCollideControllerFactory()
+{
+    auto factory = new ControllerFactory(className(typeid(T).name()), []()->AbstractObjectController*{ return new T();});
+    m_collideControllers.push_back(factory);
 }
 
 Q_DECLARE_INTERFACE(AbstractPluginInterface, "com.my.AbstractPluginInterface")

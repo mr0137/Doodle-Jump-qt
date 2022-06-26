@@ -16,7 +16,7 @@ void LevelGenerator::proceed(QRect visualRect)
     static int i = 0;
     if (i++ == 0)
     {
-        createObject("Slab", {0, 30});
+        createObject("Slab", {130, 700});
 
 
                 //this.data.push([random(5,370),random(300,400),1,0,0,0]);
@@ -27,7 +27,7 @@ void LevelGenerator::proceed(QRect visualRect)
                 //this.data.push([random(5,370),random(-40,-200),1,0,0,0]);
                 //this.data.push([random(5,370),random(0,300),1,0,0,0]);
 
-                //CreateItemMsg msg;
+        //CreateItemMsg msg;
         //msg.id = 10;
         //msg.x = 0;
         //msg.y = 1300;

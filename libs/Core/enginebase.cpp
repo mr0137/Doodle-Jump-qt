@@ -55,7 +55,7 @@ void EngineBase::proceed(int uSecond, int dt)
     }
 
     if(doMath){
-        //m_levelGenerator->proceed();
+        m_levelGenerator->proceed({});
         //proceed physical items
         for (auto c : m_objectControllers)
         {

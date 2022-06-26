@@ -10,17 +10,27 @@ Engine::Engine(QObject *parent) : QObject(parent)
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, [this](){
-        m_interface->proceed();
+
+    });
+    m_lastCreatedPIID = 0;
+    //messageNegotiator->registerMsgHandler(&Engine::proceedCreateItemMsg, this);
+    //messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
+    messageNegotiator->registerMsgHandler(&Engine::proceedSetEngineModeMsg, this);
+
+    m_levelGenerator->setCreateHandler([this](QString name, QPoint pos){
+       return createObject(name, pos);
     });
 
-    messageNegotiator->registerMsgHandler(&Engine::proceedCreateItemMsg, this);
-    messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
-    messageNegotiator->registerMsgHandler(&Engine::proceedSetEngineModeMsg, this);
+    m_levelGenerator->setDeleteHandler([this](uint32_t id){
+        return deleteObject(id);
+    });
 }
 
 Engine::~Engine()
 {
     future.cancel();
+    m_interfaceProceeder.cancel();
+    m_interfaceProceeder.waitForFinished();
     future.waitForFinished();
 }
 
@@ -43,7 +53,12 @@ void Engine::start()
         }
     });
 
-    m_timer->start(100);
+    m_interfaceProceeder = QtConcurrent::run([this](){
+        while (this->working)
+        {
+            m_interface->proceed();
+        }
+    });
 }
 
 void Engine::stop()
@@ -69,11 +84,6 @@ void Engine::addCollideControllerFactories(const QList<ControllerFactory *> *val
     }
 }
 
-void Engine::addLevelObjectCreators(const QList<ControllerFactory *> *value)
-{
-
-}
-
 CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
 {
     QString type = msg.objectType;
@@ -82,7 +92,7 @@ CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
     answ.objectType = msg.objectType;
     answ.id = createObject(type, {msg.x, msg.y});
 
-    qDebug() << msg.objectType << lastCreatedPIID;
+    qDebug() << msg.objectType << m_lastCreatedPIID;
     return answ;
 }
 
@@ -118,7 +128,7 @@ SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
             delete p.second;
         }
         m_objectControllers.clear();
-        lastCreatedPIID = -1;
+        m_lastCreatedPIID = -1;
     }
 
     SetModeEngineMsgAns msgAnswer;
@@ -130,24 +140,37 @@ SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
 uint32_t Engine::createObject(QString type, QPoint pos)
 {
     ControllerFactory* factory = nullptr;
-    factory = *m_objectControllerFactories.find(type);
-    if (factory == nullptr)
+    auto it = m_objectControllerFactories.find(QString(type + QString("Controller")));
+    if (it == m_objectControllerFactories.end())
     {
-        factory = *m_collideControllerFactories.find(type);
+        it = m_collideControllerFactories.find(QString(type + QString("Controller")));
+        if (it == m_collideControllerFactories.end())
+        {
+            return -1;
+        }
     }
-
-    if (factory == nullptr)
-    {
-        return -1;
-    }
+    factory = it.value();
 
     AbstractObjectController *controller = factory->create();
-    lastCreatedPIID++;
-    controller->setPiId(lastCreatedPIID);
-
+    m_lastCreatedPIID++;
+    controller->setPiId(m_lastCreatedPIID);
+    controller->setEngineBase(this);
     controller->init(pos);
 
-    insertController(lastCreatedPIID, controller);
-    return lastCreatedPIID;
+    insertController(m_lastCreatedPIID, controller);
+
+    CreateItemMsg msg;
+    msg.x = pos.x();
+    msg.y = pos.y();
+    msg.objectType = type;
+    m_interface->sendFromEngine(msg, m_lastCreatedPIID);
+
+    return m_lastCreatedPIID;
+}
+
+bool Engine::deleteObject(uint32_t id)
+{
+    //TODO add removing
+    return false;
 }
 

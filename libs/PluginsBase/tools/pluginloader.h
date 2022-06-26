@@ -8,13 +8,15 @@
 #include <QUrl>
 #include <pluginsbase_global.h>
 
+class AbstractPluginInterface;
+
 class PLUGINSBASE_EXPORT PluginLoader : public QObject
 {
     Q_OBJECT
 public:
     PluginLoader(const QString &appPath, QObject *parent = nullptr);
     ~PluginLoader();
-    QObject* load(QString libname);
+    AbstractPluginInterface* load(QString libname);
     bool unload(const QString &name);
 private:
     QString m_appPath;

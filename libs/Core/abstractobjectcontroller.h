@@ -11,7 +11,7 @@
 enum class ControllerType
 {
     SLAB,
-    MONSTER,    //monster, boost, etc
+    MONSTER,
     DOODLER,
     GHOST,      //multiplayer doodler
     BULLET,
@@ -30,7 +30,7 @@ public:
     virtual void proceed(double dt) = 0;
     virtual void init(QPoint startPoint) = 0;
 
-    QRect getBoundingRect();
+    QRectF getBoundingRect();
 
     QByteArray proceedMsg(MessageHeader *header, QDataStream &stream);
 
@@ -44,7 +44,7 @@ protected:
     uint32_t m_id;
     MessageNegotiator *m_negotiator;
 
-    QRect m_boundingRect;
+    QRectF m_boundingRect;
     CollisionType m_collisionType = CollisionType::NONE;
 };
 

@@ -13,7 +13,7 @@ class CorePlugin : public QQmlExtensionPlugin, public AbstractPluginInterface
 
 public:
     virtual void registerTypes(const char *uri) override;
-    virtual void init(EngineBase *engine, QString appPath = "") override;
+    virtual void init(QString appPath = "") override;
 private:
     QString m_appPath = "";
 };

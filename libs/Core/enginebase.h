@@ -37,7 +37,7 @@ protected:
     QByteArray proceedItemMsg(MessageHeader header, QDataStream &s);
 
 protected:
-    int lastCreatedPIID = 0;
+    uint32_t m_lastCreatedPIID = 0;
     std::map<uint32_t, AbstractObjectController*> m_objectControllers;
     std::map<uint32_t, AbstractObjectController*> m_collideObjectControllers;
     MessageNegotiator *messageNegotiator;

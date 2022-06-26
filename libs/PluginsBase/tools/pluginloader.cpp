@@ -1,4 +1,5 @@
 #include "pluginloader.h"
+#include <AbstractPluginInterface.h>
 
 PluginLoader::PluginLoader(const QString &appPath, QObject *parent) : QObject(parent), m_appPath(appPath)
 {
@@ -14,7 +15,7 @@ PluginLoader::~PluginLoader()
     m_instancesRegistry.clear();
 }
 
-QObject *PluginLoader::load(QString libname)
+AbstractPluginInterface* PluginLoader::load(QString libname)
 {
     auto d = QDir::current();
 #ifdef QT_NO_DEBUG
@@ -34,11 +35,18 @@ QObject *PluginLoader::load(QString libname)
         qDebug() << "ERROR while opening plugin: " << plugin->errorString() << path;
     }
 
+    AbstractPluginInterface* instance = nullptr;
+
     if (plugin)
     {
         m_instancesRegistry[libname] = plugin;
+        instance = qobject_cast<AbstractPluginInterface*>(plugin->instance());
+        if (instance)
+        {
+            instance->init(m_appPath);
+        }
     }
-    return plugin->instance();
+    return instance;
 }
 
 bool PluginLoader::unload(const QString &name)

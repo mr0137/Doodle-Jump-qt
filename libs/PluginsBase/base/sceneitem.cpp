@@ -73,6 +73,7 @@ void SceneItem::setX(double newX)
     if (qFuzzyCompare(m_x, newX))
         return;
     m_x = newX;
+    setNeedUpdate(true);
     emit xChanged();
 }
 
@@ -81,6 +82,7 @@ void SceneItem::setY(double newY)
     if (qFuzzyCompare(m_y, newY))
         return;
     m_y = newY;
+    setNeedUpdate(true);
     emit yChanged();
 }
 
@@ -95,4 +97,17 @@ void SceneItem::setMovable(bool newMovable)
         return;
     m_movable = newMovable;
     emit movableChanged();
+}
+
+bool SceneItem::needUpdate() const
+{
+    return m_needUpdate;
+}
+
+void SceneItem::setNeedUpdate(bool newNeedUpdate)
+{
+    if (m_needUpdate == newNeedUpdate)
+        return;
+    m_needUpdate = newNeedUpdate;
+    emit needUpdateChanged();
 }

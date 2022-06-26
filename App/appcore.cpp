@@ -69,8 +69,8 @@ void AppCore::init(QString appPath)
         result.chop(1);
     }
     m_pluginLoader = new PluginLoader(result, this);
-
-    m_pluginLoader->load("CorePlugin");
+    auto instance = m_pluginLoader->load("CorePlugin");
+    load(instance);
 }
 
 void AppCore::start()
@@ -79,18 +79,22 @@ void AppCore::start()
     m_scene->startTest();
 }
 
-void AppCore::load(QObject *pluginInstance)
+void AppCore::stop()
 {
-    if (m_engine != nullptr)
+    m_engine->stop();
+}
+
+void AppCore::load(AbstractPluginInterface *pluginInstance)
+{
+    if (m_engine == nullptr)
     {
         return;
     }
 
-    auto pluginInterface = reinterpret_cast<AbstractPluginInterface*>(pluginInstance);
-
-    if (pluginInterface)
+    if (pluginInstance)
     {
-        m_engine->addCollideControllerFactories(pluginInterface->getControllerFactories());
-        m_scene->addFactory(pluginInterface->getSceneItemFactories());
+        m_engine->addCollideControllerFactories(pluginInstance->getCollideControllerFactories());
+        m_engine->addControllerFactories(pluginInstance->getControllerFactories());
+        m_scene->addFactory(pluginInstance->getSceneItemFactories());
     }
 }

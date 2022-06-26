@@ -21,7 +21,6 @@ public:
 
     void addControllerFactories(const QList<ControllerFactory *> *value);
     void addCollideControllerFactories(const QList<ControllerFactory *> *value);
-    void addLevelObjectCreators(const QList<ControllerFactory *> *value);
 
 private:
     CreateItemMsgAns proceedCreateItemMsg(CreateItemMsg msg);
@@ -29,12 +28,13 @@ private:
     SetModeEngineMsgAns proceedSetEngineModeMsg(SetModeEngineMsg msg);
 
     uint32_t createObject(QString type, QPoint pos);
-
+    bool deleteObject(uint32_t id);
 
 private:
     QHash<QString, ControllerFactory*> m_objectControllerFactories;
     QHash<QString, ControllerFactory*> m_collideControllerFactories;
     QFuture<void> future;
+    QFuture<void> m_interfaceProceeder;
     QTimer* m_timer;
     bool working = true;
 };
