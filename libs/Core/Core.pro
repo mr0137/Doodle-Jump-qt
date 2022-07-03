@@ -4,7 +4,7 @@ QT += core
 TEMPLATE = lib
 DEFINES += CORE_LIBRARY
 
-CONFIG += c++20
+CONFIG += c++17
 
 SOURCES += \
     abstractobjectcontroller.cpp \

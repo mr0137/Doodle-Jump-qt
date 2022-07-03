@@ -16,7 +16,7 @@ void SlabHMovingController::proceed(double dt)
         {
             auto step = (m_internalVelocity * dt/100000) * speed;
             m_boundingRect.setLeft(m_boundingRect.x() - step);
-            if (100 > m_boundingRect.x() - step)
+            if (left > m_boundingRect.x() - step)
             {
                 mode.setFlag(VELOCITY_DOWN);
             }
@@ -30,7 +30,7 @@ void SlabHMovingController::proceed(double dt)
         {
             auto step = (m_internalVelocity * dt/100000) * speed;
             m_boundingRect.setLeft(m_boundingRect.x() + step);
-            if (500 < m_boundingRect.x() + step)
+            if (right < m_boundingRect.x() + step)
             {
                 mode.setFlag(VELOCITY_DOWN);
             }
@@ -46,14 +46,14 @@ void SlabHMovingController::proceed(double dt)
         {
             if (m_internalVelocity > 0)
             {
-                m_internalVelocity -= dt/100000 * speed;
+                m_internalVelocity -= dt/100000 * velocity;
             }
         }
         else if (mode.testFlag(VELOCITY_UP))
         {
             if (m_internalVelocity < velocity)
             {
-                m_internalVelocity += dt/100000 * speed;
+                m_internalVelocity += dt/100000 * velocity;
             }
         }
 

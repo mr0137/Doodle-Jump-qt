@@ -109,20 +109,26 @@ private:
 template<class Msg, class ... Msgs>
 void EngineInterface::sendFromEngine(Msg msg, Msgs ... msgs, uint32_t itemId)
 {
-    QByteArray data;
-    QDataStream s(&data, QIODevice::WriteOnly);
-    //write header
-    MessageHeader header;
-    header.uid = this->nextMsgIdEngineBaseSide++;
-    header.type = Msg().getType();
-    header.itemId = itemId;
-    header.isAnswer = false;
-    s << header;
-    //write msg
-    msg.serialize(&s);
-    fromEngineBase.push(data);
-    if constexpr (sizeof...(msgs) > 0) {
-        sendFromEngineBase(msgs..., itemId);
+    try{
+        QByteArray data;
+        QDataStream s(&data, QIODevice::WriteOnly);
+        //write header
+        MessageHeader header;
+        header.uid = this->nextMsgIdEngineBaseSide++;
+        header.type = Msg().getType();
+        header.itemId = itemId;
+        header.isAnswer = false;
+        s << header;
+        //write msg
+        msg.serialize(&s);
+        fromEngineBase.push(data);
+        if constexpr (sizeof...(msgs) > 0) {
+            sendFromEngineBase(msgs..., itemId);
+        }
+    }
+    catch(const std::exception &ex)
+    {
+        qDebug() << "sendFromEngine : Exception" << ex.what();
     }
 }
 

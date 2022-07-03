@@ -2,7 +2,7 @@
 #include "engineinterface.h"
 #include "messagenegotiator.h"
 
-EngineInterface::EngineInterface(): fromEngineBase(200), toEngineBase(200)
+EngineInterface::EngineInterface(): fromEngineBase(46000), toEngineBase(46000)
 {
     answerDispatcher = new MessageAnswerDispatcher;
 }
@@ -14,29 +14,36 @@ EngineInterface::~EngineInterface()
 
 void EngineInterface::proceed()
 {
-    while (true)
+    try
     {
-        auto bA = fromEngineBase.pop();
-        if (bA.size() < 4) break; //no message to proceed
-        QDataStream s(bA);
-        MessageHeader h;
-        s >> h;
-        //proceed answer
-        int pos = s.device()->pos();
-        if (h.isAnswer)
+        while (true)
         {
-            answerDispatcher->proceedMsgAnswer(h, s);
-        }
-        else
-        {
-            auto search = msgFromEngineBaseHandlers.find(h.type);
-            if(search != msgFromEngineBaseHandlers.end())
+            auto bA = fromEngineBase.pop();
+            if (bA.size() < 4) break; //no message to proceed
+            QDataStream s(bA);
+            MessageHeader h;
+            s >> h;
+            //proceed answer
+            int pos = s.device()->pos();
+            if (h.isAnswer)
             {
-                search->second(s, h.itemId);
+                answerDispatcher->proceedMsgAnswer(h, s);
             }
+            else
+            {
+                auto search = msgFromEngineBaseHandlers.find(h.type);
+                if(search != msgFromEngineBaseHandlers.end())
+                {
+                    search->second(s, h.itemId);
+                }
+            }
+            s.device()->seek(pos);
+            runConnections(h.type, s);
         }
-        s.device()->seek(pos);
-        runConnections(h.type, s);
+    }
+    catch(const std::exception& ex)
+    {
+        qCritical() << "EngineInterface::proceed failed. Error:" << ex.what();
     }
 }
 

@@ -3,7 +3,7 @@ TARGET = pluginsbase
 QT -= gui
 QT += quick
 QT += core
-CONFIG += c++20
+CONFIG += c++17
 CONFIG += shared dll
 
 CONFIG(release, debug|release){
@@ -43,11 +43,11 @@ HEADERS += \
 CONFIG(release, debug|release){
 LIBS += -L$$PWD/../../../bin/libs/ -lcore
 }else{
-win32: LIBS += -L$$OUT_PWD/../core/debug -lcore
-else:unix: LIBS += -L$$OUT_PWD/../core/ -lcore
+win32: LIBS += -L$$OUT_PWD/../Core/debug -lCore
+else:unix: LIBS += -L$$OUT_PWD/../Core/ -lCore
 }
 
 INCLUDEPATH += $$PWD/../../
-INCLUDEPATH += $$PWD/../core
-DEPENDPATH += $$PWD/../core
+INCLUDEPATH += $$PWD/../Core
+DEPENDPATH += $$PWD/../Core
 

@@ -4,7 +4,7 @@ QT += quickwidgets
 QT += quick
 QT += concurrent
 QT += gui-private
-CONFIG += c++20
+CONFIG += c++17
 
 SOURCES += \
     appcore.cpp \

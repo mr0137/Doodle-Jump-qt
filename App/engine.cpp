@@ -166,7 +166,10 @@ uint32_t Engine::createObject(QString type, QPoint pos)
     msg.width = controller->getBoundingRect().width();
     msg.height = controller->getBoundingRect().height();
     msg.objectType = type;
+    msg.id = m_lastCreatedPIID;
     m_interface->sendFromEngine(msg, m_lastCreatedPIID);
+
+    qDebug() << "Engine" << msg.id;
 
     return m_lastCreatedPIID;
 }

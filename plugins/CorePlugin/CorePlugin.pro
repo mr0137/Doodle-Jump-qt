@@ -5,7 +5,7 @@ QT += qml
 QT += quick
 CONFIG += qt
 CONFIG += plugin
-CONFIG += c++20
+CONFIG += c++17
 CONFIG += qmltypes
 CONFIG += shared dll
 
@@ -58,17 +58,17 @@ DISTFILES = \
 #====================SPECIAL_PROPERTIES_STARTS====================
 CONFIG(release, debug|release){
 LIBS += -L$$PWD/../../../bin/libs -lpluginsbase
-LIBS += -L$$PWD/../../../bin/libs -lcore
+LIBS += -L$$PWD/../../../bin/libs -lCore
 }else{
 win32: LIBS += -L$$OUT_PWD/../../libs/PluginsBase/debug -lpluginsbase
 else:unix: LIBS += -L$$OUT_PWD/../../libs/PluginsBase/ -lpluginsbase
-win32: LIBS += -L$$OUT_PWD/../../libs/core/debug -lcore
-else:unix: LIBS += -L$$OUT_PWD/../../libs/core/ -lcore
+win32: LIBS += -L$$OUT_PWD/../../libs/Core/debug -lCore
+else:unix: LIBS += -L$$OUT_PWD/../../libs/Core/ -lCore
 }
 INCLUDEPATH += $$PWD/../../libs/PluginsBase
 DEPENDPATH += $$PWD/../../libs/PluginsBase
-INCLUDEPATH += $$PWD/../../libs/core
-DEPENDPATH += $$PWD/../../libs/core
+INCLUDEPATH += $$PWD/../../libs/Core
+DEPENDPATH += $$PWD/../../libs/Core
 INCLUDEPATH += $$PWD/../../
 #====================SPECIAL_PROPERTIES_ENDS====================
 

@@ -64,7 +64,7 @@ void Scene::startTest()
     startEngineMsg.mode = EngineMode::START;
     m_engineInterface->sendToEngine(startEngineMsg).onCompleted<SetModeEngineMsgAns>([this](const SetModeEngineMsgAns & ans){
         qDebug() << ":start" << ans.modeChangedSuccess;
-         m_timer->start(50);
+         m_timer->start(20);
     });
 }
 
@@ -82,8 +82,9 @@ SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id, QVariantM
         }
         item = m_factoriesHash[type]->create(m);
         item->setObjectName(objectType);
-        item->setParent(this);
+        item->setParent(nullptr);
         item->setId(id);
+        qDebug() << id;
 
         m_sceneItemsRegistry[id] = item;
         m_sceneItems.push_back(item);
@@ -110,6 +111,11 @@ void Scene::updateItems()
     QMutexLocker locker(m_mutex);
     for (int i = m_sceneItems.length() - 1; i >= 0  ; i--)
     {
+        if (m_sceneItems[i]->parent() == nullptr)
+        {
+            m_sceneItems[i]->setParent(this);
+        }
+
         if (m_sceneItems[i]->removingState() == SceneItem::READY)
         {
             removeItem(m_sceneItems[i]);
