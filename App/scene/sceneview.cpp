@@ -1,6 +1,7 @@
 #include "sceneview.h"
 #include "scene/background/backgroundnoise.h"
 #include <scene/background/backgroundgrid.h>
+#include <QPainter>
 #include <QSGSimpleTextureNode>
 #include <QSGTransformNode>
 
@@ -10,7 +11,6 @@ public:
     BackgroundGrid *grid = nullptr;
     BackgroundNoise *background = nullptr;
 };
-
 
 class ChildNode : public QSGGeometryNode
 {
@@ -113,7 +113,7 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
                 g->vertexDataAsPoint2D()[1].set(item->x() + item->width(), item->y());
                 g->vertexDataAsPoint2D()[2].set(item->x() + item->width(), item->y() + item->height());
                 g->vertexDataAsPoint2D()[3].set(item->x(), item->y() + item->height());
-
+                child->texture->setRect(QRectF(item->x(), item->y(), item->width(), item->height()));
                 child->setGeometry(g);
                 child->markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
                 item->setNeedUpdate(false);
@@ -121,7 +121,13 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         }
     }
 
+    if (m_fpsMonitor.isWorking())
+    {
+        setCurrentFPS(m_fpsMonitor.recalculateFPS());
+    }
+
     m_geometryChanged = false;
+
     update();
     return mainNode;
 }
@@ -150,4 +156,17 @@ void SceneView::setScene(Scene *newScene)
         return;
     m_scene = newScene;
     emit sceneChanged();
+}
+
+double SceneView::currentFPS() const
+{
+    return m_currentFPS;
+}
+
+void SceneView::setCurrentFPS(double newCurrentFPS)
+{
+    if (qFuzzyCompare(m_currentFPS, newCurrentFPS))
+        return;
+    m_currentFPS = newCurrentFPS;
+    emit currentFPSChanged();
 }

@@ -14,10 +14,12 @@ class PLUGINSBASE_EXPORT SceneItem : public QObject
     Q_PROPERTY(uint32_t id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(double x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(double y READ y WRITE setY NOTIFY yChanged)
+    Q_PROPERTY(double width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(double height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(bool movable READ movable WRITE setMovable NOTIFY movableChanged)
     Q_PROPERTY(bool needUpdate READ needUpdate WRITE setNeedUpdate NOTIFY needUpdateChanged)
 public:
-    explicit SceneItem(QObject *parent = nullptr);
+    explicit SceneItem(QObject *parent = nullptr, double width = 100, double height = 100);
 
     QString type() const;
     void setType(const QString &newType);
@@ -50,12 +52,18 @@ public:
     bool needUpdate() const;
     void setNeedUpdate(bool newNeedUpdate);
 
+    void setWidth(double newWidth);
+
+    void setHeight(double newHeight);
+
 signals:
     void idChanged();
     void xChanged();
     void yChanged();
     void movableChanged(); 
     void needUpdateChanged();
+    void widthChanged();
+    void heightChanged();
 
 protected:
     QString m_type = "SceneItem";

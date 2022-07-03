@@ -16,23 +16,14 @@ void LevelGenerator::proceed(QRect visualRect)
     static int i = 0;
     if (i++ == 0)
     {
-        createObject("Slab", {130, 700});
+        for (int i = 0; i < 1; i++)
+        {
+            createObject("Slab", {130, 700 + i*100});
+            //createObject("SlabVMoving", {530, 500 + i*100});
+            createObject("SlabVMoving", {130, 900 + i*100});
+            createObject("SlabHMoving", {130, 300 + i*100});
+        }
 
-
-                //this.data.push([random(5,370),random(300,400),1,0,0,0]);
-                //this.data.push([random(5,370),random(100,200),1,0,0,0]);
-                //this.data.push([random(5,370),random(100,300),1,0,0,0]);
-                //this.data.push([random(5,370),random(0,50),1,0,0,0]);
-                //this.data.push([random(5,370),random(0,-50),1,0,0,0]);
-                //this.data.push([random(5,370),random(-40,-200),1,0,0,0]);
-                //this.data.push([random(5,370),random(0,300),1,0,0,0]);
-
-        //CreateItemMsg msg;
-        //msg.id = 10;
-        //msg.x = 0;
-        //msg.y = 1300;
-        //msg.objectType = "SlabDefault";
-        //m_engineInterface->sendFromEngine(msg, 10);
     }
 }
 

@@ -1,6 +1,9 @@
 #include "sceneitem.h"
 
-SceneItem::SceneItem(QObject *parent) : QObject(parent)
+SceneItem::SceneItem(QObject *parent, double width, double height)
+    : QObject(parent),
+      m_width(width),
+      m_height(height)
 {
 
 }
@@ -110,4 +113,20 @@ void SceneItem::setNeedUpdate(bool newNeedUpdate)
         return;
     m_needUpdate = newNeedUpdate;
     emit needUpdateChanged();
+}
+
+void SceneItem::setWidth(double newWidth)
+{
+    if (qFuzzyCompare(m_width, newWidth))
+        return;
+    m_width = newWidth;
+    emit widthChanged();
+}
+
+void SceneItem::setHeight(double newHeight)
+{
+    if (qFuzzyCompare(m_height, newHeight))
+        return;
+    m_height = newHeight;
+    emit heightChanged();
 }

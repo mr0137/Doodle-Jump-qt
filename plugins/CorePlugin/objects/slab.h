@@ -9,13 +9,7 @@
 class Slab : public SceneItem
 {
 public:
-    explicit Slab(QObject *parent = nullptr);
-    ~Slab();
-private:
-    ChangeCoordsMsgAns proceedCreateItemMsg(ChangeCoordsMsg msg);
-
-private:
-    MessageNegotiator *m_messageNegotiator;
+    explicit Slab(QObject *parent = nullptr, double width = 100, double height = 100);
 };
 
 #endif // SLABDEFAULT_H

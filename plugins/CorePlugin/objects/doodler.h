@@ -6,7 +6,7 @@
 class Doodler : public SceneItem
 {
 public:
-    explicit Doodler(QObject *parent = nullptr);
+    explicit Doodler(QObject *parent = nullptr, double width = 100, double height = 100);
 };
 
 #endif // DOODLER_H

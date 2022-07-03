@@ -59,6 +59,8 @@ void Engine::start()
             m_interface->proceed();
         }
     });
+
+    //m_timer->start(5);
 }
 
 void Engine::stop()
@@ -91,7 +93,6 @@ CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
     CreateItemMsgAns answ;
     answ.objectType = msg.objectType;
     answ.id = createObject(type, {msg.x, msg.y});
-
     qDebug() << msg.objectType << m_lastCreatedPIID;
     return answ;
 }
@@ -162,6 +163,8 @@ uint32_t Engine::createObject(QString type, QPoint pos)
     CreateItemMsg msg;
     msg.x = pos.x();
     msg.y = pos.y();
+    msg.width = controller->getBoundingRect().width();
+    msg.height = controller->getBoundingRect().height();
     msg.objectType = type;
     m_interface->sendFromEngine(msg, m_lastCreatedPIID);
 

@@ -3,12 +3,12 @@
 
 void CreateItemMsg::serialize(QDataStream * s) const
 {
-    *s << id << x << y << width << height << objectType;
+    *s << id << x << y << objectType << width << height;
 }
 
 void CreateItemMsg::deserialize(QDataStream *s)
 {
-    *s >> id >> x >> y >> width >> height >> objectType;
+    *s >> id >> x >> y >> objectType >> width >> height;
 }
 
 void CreateItemMsgAns::serialize(QDataStream * s) const

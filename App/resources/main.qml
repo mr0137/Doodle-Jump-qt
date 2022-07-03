@@ -15,8 +15,16 @@ Window {
         anchors.fill: parent
 
         SceneView{
+            id: sceneView
             anchors.fill: parent
             scene: AppCore.scene
+        }
+
+        Text {
+            anchors.right: sceneView.right
+            anchors.top: sceneView.top
+            font.pixelSize: 20
+            text: "FPS: " + sceneView.currentFPS
         }
 
         Button{

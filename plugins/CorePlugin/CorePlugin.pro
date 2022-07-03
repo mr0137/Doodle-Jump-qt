@@ -21,17 +21,25 @@ DEFINES += COREPLUGIN_LIBRARY
 SOURCES += \
         controllers/doodlercontroller.cpp \
         controllers/slabcontroller.cpp \
+        controllers/slabhmovingcontroller.cpp \
+        controllers/slabvmovingcontroller.cpp \
         coreplugin_plugin.cpp \
         objects/doodler.cpp \
-        objects/slab.cpp
+        objects/slab.cpp \
+        objects/slabhmoving.cpp \
+        objects/slabvmoving.cpp
 
 
 HEADERS += \
         controllers/doodlercontroller.h \
         controllers/slabcontroller.h \
+        controllers/slabhmovingcontroller.h \
+        controllers/slabvmovingcontroller.h \
         coreplugin_plugin.h \
         objects/doodler.h \
-        objects/slab.h
+        objects/slab.h \
+        objects/slabhmoving.h \
+        objects/slabvmoving.h
 
 
 DISTFILES = \

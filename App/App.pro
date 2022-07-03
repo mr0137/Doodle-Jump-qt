@@ -13,6 +13,7 @@ SOURCES += \
     main.cpp \
     scene/background/backgroundgrid.cpp \
     scene/background/backgroundnoise.cpp \
+    scene/fpsmonitor.cpp \
     scene/scene.cpp \
     scene/sceneview.cpp
 
@@ -26,6 +27,7 @@ HEADERS += \
     imageprovider.h \
     scene/background/backgroundgrid.h \
     scene/background/backgroundnoise.h \
+    scene/fpsmonitor.h \
     scene/scene.h \
     scene/sceneview.h
 

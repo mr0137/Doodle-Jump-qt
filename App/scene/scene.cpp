@@ -34,7 +34,7 @@ void Scene::setEngineInterface(EngineInterface *ei)
 
         ei->installStreamMsg<CreateItemMsg>([this](CreateItemMsg msg, uint32_t itemId){
             QMutexLocker locker(m_mutex);
-            addItem(QPoint(msg.x, msg.y), msg.objectType, itemId);
+            addItem(QPoint(msg.x, msg.y), msg.objectType, itemId, QVariantMap{{"width", msg.width}, {"height", msg.height}});
         });
 
         ei->installStreamMsg<RemoveItemMessage>([this](RemoveItemMessage msg, uint32_t itemId){
@@ -68,7 +68,7 @@ void Scene::startTest()
     });
 }
 
-SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id)
+SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id, QVariantMap initialParams)
 {
     SceneItem * item = nullptr;
     auto type = objectType;
@@ -76,6 +76,10 @@ SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id)
     if (m_factoriesHash.contains(type))
     {
         QVariantMap m{{"x", pos.x()}, {"y" , pos.y()}};
+        for (const QString& str : initialParams.keys())
+        {
+            m[str] = initialParams[str];
+        }
         item = m_factoriesHash[type]->create(m);
         item->setObjectName(objectType);
         item->setParent(this);

@@ -30,6 +30,12 @@ public:
     virtual void proceed(double dt) = 0;
     virtual void init(QPoint startPoint) = 0;
 
+    //random initialization
+    virtual bool needInitWithRandomValue() { return false; }
+    virtual double getRangeFrom() { return 0; }
+    virtual double getRangeTo() { return 0; }
+    virtual void setRandomValue(double value) { Q_UNUSED(value) }
+
     QRectF getBoundingRect();
 
     QByteArray proceedMsg(MessageHeader *header, QDataStream &stream);

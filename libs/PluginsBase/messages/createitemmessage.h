@@ -5,6 +5,7 @@
 #include <pluginsbase_global.h>
 #include <QDataStream>
 #include <QString>
+#include <QRectF>
 
 struct PLUGINSBASE_EXPORT CreateItemMsg : MessageBase
 {

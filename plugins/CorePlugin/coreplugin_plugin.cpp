@@ -6,6 +6,10 @@
 #include "controllers/slabcontroller.h"
 #include "objects/slab.h"
 #include "objects/doodler.h"
+#include <controllers/slabhmovingcontroller.h>
+#include <controllers/slabvmovingcontroller.h>
+#include <objects/slabhmoving.h>
+#include <objects/slabvmoving.h>
 
 
 void CorePlugin::registerTypes(const char *)
@@ -19,6 +23,12 @@ void CorePlugin::init(QString appPath)
 
     createControllerFactory<SlabController>();
     createObjectFactory<Slab>();
+
+    createControllerFactory<SlabVMovingController>();
+    createObjectFactory<SlabVMoving>();
+
+    createControllerFactory<SlabHMovingController>();
+    createObjectFactory<SlabHMoving>();
 
     createCollideControllerFactory<DoodlerController>();
     createObjectFactory<Doodler>();

@@ -18,7 +18,7 @@ public:
 
 protected:
     SceneItem* getItem(uint32_t id);
-    virtual SceneItem *addItem(QPoint pos, QString objectType, uint32_t id) = 0;
+    virtual SceneItem *addItem(QPoint pos, QString objectType, uint32_t id, QVariantMap initialParams = {}) = 0;
     virtual SceneItem *addItem(double x, double y, QString objectType, uint32_t id) = 0;
     virtual void removeItem(SceneItem* item) = 0;
 
