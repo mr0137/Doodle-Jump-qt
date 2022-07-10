@@ -16,10 +16,10 @@ struct PLUGINSBASE_EXPORT CreateItemMsg : MessageBase
     void deserialize(QDataStream *) override;
 
 public:
-    int x;
-    int y;
-    int width;
-    int height;
+    double x;
+    double y;
+    double width;
+    double height;
     uint32_t id;
     QString objectType;
 

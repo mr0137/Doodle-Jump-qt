@@ -11,49 +11,23 @@ LevelGenerator::~LevelGenerator()
 
 }
 
-void LevelGenerator::proceed(QRect visualRect)
+void LevelGenerator::proceed(QRectF visualRect)
 {
     static int i = 0;
     if (i++ == 0)
     {
-        for (int i = 10; i < 1300; i+=40)
+        for (int i = 0; i < 8; i++)
         {
-            for (int j = 0; j < 750; j+=110)
-            createObject("SlabVMoving", {j, i});
+            if (i == 3)
+            {
+                createObject("SlabVMoving", {i * 100 + 8.3 * i, visualRect.height() - 30});
+            }
+            else
+            {
+                createObject("Slab", {i * 100 + 8.3 * i, visualRect.height() - 30});
+            }
         }
-
-        for (int i = 100; i < 1200; i+=40)
-        {
-            for (int j = 0; j < 750; j+=110)
-            createObject("SlabHMoving", {j, i});
-        }
-
-        //for (int i = 0; i < 5; i++)
-        //{
-        //    createObject("SlabVMoving", {130, 900 + i*100});
-//
-//
-        //    createObject("SlabHMoving", {130, 300 + i*100});
-        //    createObject("SlabVMoving", {130, 950 + i*100});
-        //    createObject("SlabHMoving", {130, 350 + i*100});
-        //    createObject("SlabVMoving", {130, 1000 + i*100});
-        //    createObject("SlabHMoving", {130, 400 + i*100});
-//
-        //    createObject("SlabVMoving", {330, 900 + i*100});
-        //    createObject("SlabHMoving", {330, 300 + i*100});
-        //    createObject("SlabVMoving", {330, 950 + i*100});
-        //    createObject("SlabHMoving", {330, 350 + i*100});
-        //    createObject("SlabVMoving", {330, 1000 + i*100});
-        //    createObject("SlabHMoving", {330, 400 + i*100});
-//
-        //    createObject("SlabVMoving", {480, 900 + i*100});
-        //    createObject("SlabHMoving", {480, 300 + i*100});
-        //    createObject("SlabVMoving", {480, 950 + i*100});
-        //    createObject("SlabHMoving", {480, 350 + i*100});
-        //    createObject("SlabVMoving", {480, 1000 + i*100});
-        //    createObject("SlabHMoving", {480, 400 + i*100});
-        //}
-
+        createObject("Doodler", {424, 667});
     }
 }
 
@@ -94,7 +68,7 @@ void LevelGenerator::addGenerateableObjectsTypes(AbstractObjectController *objec
     }
 }
 
-void LevelGenerator::setCreateHandler(const std::function<uint32_t (QString, QPoint)> &createHandler)
+void LevelGenerator::setCreateHandler(const std::function<uint32_t (QString, QPointF)> &createHandler)
 {
     m_createHandler = createHandler;
 }
@@ -104,7 +78,7 @@ void LevelGenerator::setDeleteHandler(const std::function<bool(uint32_t)> &delet
     m_deleteHandler = deleteHandler;
 }
 
-void LevelGenerator::createObject(QString type, QPoint pos)
+void LevelGenerator::createObject(QString type, QPointF pos)
 {
     m_createHandler(type, pos);
 }

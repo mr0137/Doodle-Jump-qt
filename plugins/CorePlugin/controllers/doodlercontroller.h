@@ -10,12 +10,10 @@ public:
 
     virtual void proceedCollision(ControllerType controllerType, CollisionType collisionType) override;
     virtual void proceed(double dt) override;
-    virtual void init(QPoint pos) override;
-    double getVelocityY();
-    double getVelocityX();
+    virtual void init(QPointF pos) override;
+
 private:
-    double m_velocityX = 0;
-    double m_velocityY = 0;
+    double m_gravity = 9.8;
 };
 
 #endif // DOODLERCONTROLLER_H

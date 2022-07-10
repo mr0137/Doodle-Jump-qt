@@ -8,14 +8,15 @@
 
 #include <QRectF>
 
-enum class ControllerType
+enum class ControllerType : uint8_t
 {
-    SLAB,
-    MONSTER,
-    DOODLER,
-    GHOST,      //multiplayer doodler
-    BULLET,
-    POWERUP
+    SLAB = 1,
+    MONSTER = 2,
+    DOODLER = 4,
+    GHOST = 8,      //multiplayer doodler
+    BULLET = 16,
+    POWERUP = 32,
+    TRAP = 64
 };
 
 class EngineBase;
@@ -28,7 +29,7 @@ public:
 
     virtual void proceedCollision(ControllerType controllerType, CollisionType collisionType) = 0;
     virtual void proceed(double dt) = 0;
-    virtual void init(QPoint startPoint) = 0;
+    virtual void init(QPointF startPoint) = 0;
 
     //random initialization
     virtual bool needInitWithRandomValue() { return false; }
@@ -36,14 +37,23 @@ public:
     virtual double getRangeTo() { return 0; }
     virtual void setRandomValue(double value) { Q_UNUSED(value) }
 
-    QRectF getBoundingRect();
-
     QByteArray proceedMsg(MessageHeader *header, QDataStream &stream);
+
+    QRectF getBoundingRect();
+    ControllerType getControllerType();
+    int getCollidableTypes();
+    double getVelocityX();
+    double getVelocityY();
 
     void setPiId(int value);
     int getPiId() const { return m_id; }
     void setEngineBase(EngineBase *e);
     CollisionType getCollisionType();
+
+protected:
+    void changePos(QPointF point);
+    void changeX(double x);
+    void changeY(double y);
 
 protected:
     EngineBase *m_engine;
@@ -52,6 +62,10 @@ protected:
 
     QRectF m_boundingRect;
     CollisionType m_collisionType = CollisionType::NONE;
+    ControllerType m_controllerType = ControllerType::SLAB;
+    int m_collidableTypes = 0;
+    double m_velocityX = 0;
+    double m_velocityY = 0;
 };
 
 #endif // ABSTRACTCONTROLLER_H

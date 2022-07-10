@@ -8,7 +8,7 @@ class SlabHMovingController : public SlabController
 public:
     SlabHMovingController();
     virtual void proceed(double dt) override;
-    virtual void init(QPoint startPoint) override;
+    virtual void init(QPointF startPoint) override;
 
 private:
     bool m_inited = false;

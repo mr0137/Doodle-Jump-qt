@@ -15,7 +15,7 @@ void SlabHMovingController::proceed(double dt)
         if (mode.testFlag(LEFT))
         {
             auto step = (m_internalVelocity * dt/100000) * speed;
-            m_boundingRect.setLeft(m_boundingRect.x() - step);
+            changeX(m_boundingRect.x() - step);
             if (left > m_boundingRect.x() - step)
             {
                 mode.setFlag(VELOCITY_DOWN);
@@ -29,7 +29,7 @@ void SlabHMovingController::proceed(double dt)
         else if (mode.testFlag(RIGHT))
         {
             auto step = (m_internalVelocity * dt/100000) * speed;
-            m_boundingRect.setLeft(m_boundingRect.x() + step);
+            changeX(m_boundingRect.x() + step);
             if (right < m_boundingRect.x() + step)
             {
                 mode.setFlag(VELOCITY_DOWN);
@@ -67,9 +67,9 @@ void SlabHMovingController::proceed(double dt)
     }
 }
 
-void SlabHMovingController::init(QPoint startPoint)
+void SlabHMovingController::init(QPointF startPoint)
 {
-    m_boundingRect = QRectF(startPoint.x(), startPoint.y(), m_boundingRect.width(), m_boundingRect.height());
+    changePos(startPoint);
     mode = LEFT;
     mode.setFlag(VELOCITY_UP);
 

@@ -9,7 +9,7 @@ public:
     SlabController();
     virtual void proceedCollision(ControllerType controllerType, CollisionType collisionType) override;
     virtual void proceed(double dt) override;
-    virtual void init(QPoint pos) override;
+    virtual void init(QPointF pos) override;
 };
 
 #endif // SLABCONTROLLER_H

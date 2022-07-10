@@ -27,7 +27,7 @@ private:
     RemoveItemMessageAns proceedRemoveItemMsg(RemoveItemMessage msg);
     SetModeEngineMsgAns proceedSetEngineModeMsg(SetModeEngineMsg msg);
 
-    uint32_t createObject(QString type, QPoint pos);
+    uint32_t createObject(QString type, QPointF pos);
     bool deleteObject(uint32_t id);
 
 private:

@@ -19,7 +19,7 @@ void SlabController::proceed(double dt)
 
 }
 
-void SlabController::init(QPoint pos)
+void SlabController::init(QPointF pos)
 {
-
+    changePos(pos);
 }

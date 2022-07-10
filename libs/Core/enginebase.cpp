@@ -1,6 +1,13 @@
 #include "enginebase.h"
 #include "engineinterface.h"
 
+#include <QRectF>
+
+static inline bool containsType(int type, int sequance)
+{
+    return (type & sequance) == type;
+}
+
 EngineBase::EngineBase()
 {
     m_interface = new EngineInterface;
@@ -55,13 +62,24 @@ void EngineBase::proceed(int uSecond, int dt)
     }
 
     if(doMath){
-        m_levelGenerator->proceed({});
+        m_levelGenerator->proceed(QRectF{0, 0, 750, 1334});
         //proceed physical items
         for (auto c : m_objectControllers)
         {
             c.second->proceed(1000);
         }
 
+        for (auto d : m_collideObjectControllers)
+        {
+            for (auto c : m_objectControllers)
+            {
+                if (containsType(static_cast<int>(c.second->getControllerType()), d.second->getCollidableTypes()))
+                {
+                    m_collisionDetector->proceed(d.second, c.second);
+                }
+            }
+            d.second->proceed(1000);
+        }
 
         if(!(m_engineTime % 1000000))
         {
@@ -77,7 +95,14 @@ void EngineBase::proceed(int uSecond, int dt)
 
 void EngineBase::insertController(uint32_t id, AbstractObjectController * c)
 {
-    m_objectControllers.emplace(id, c);
+    if (c->getControllerType() == ControllerType::BULLET || c->getControllerType() == ControllerType::DOODLER)
+    {
+        m_collideObjectControllers.emplace(id, c);
+    }
+    else
+    {
+        m_objectControllers.emplace(id, c);
+    }
 }
 
 bool EngineBase::removeController(uint32_t id)

@@ -17,7 +17,7 @@ Engine::Engine(QObject *parent) : QObject(parent)
     //messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
     messageNegotiator->registerMsgHandler(&Engine::proceedSetEngineModeMsg, this);
 
-    m_levelGenerator->setCreateHandler([this](QString name, QPoint pos){
+    m_levelGenerator->setCreateHandler([this](QString name, QPointF pos){
        return createObject(name, pos);
     });
 
@@ -92,7 +92,7 @@ CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
 
     CreateItemMsgAns answ;
     answ.objectType = msg.objectType;
-    answ.id = createObject(type, {msg.x, msg.y});
+    answ.id = createObject(type, QPointF{msg.x, msg.y});
     qDebug() << msg.objectType << m_lastCreatedPIID;
     return answ;
 }
@@ -138,7 +138,7 @@ SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
     return msgAnswer;
 }
 
-uint32_t Engine::createObject(QString type, QPoint pos)
+uint32_t Engine::createObject(QString type, QPointF pos)
 {
     ControllerFactory* factory = nullptr;
     auto it = m_objectControllerFactories.find(QString(type + QString("Controller")));
@@ -147,6 +147,7 @@ uint32_t Engine::createObject(QString type, QPoint pos)
         it = m_collideControllerFactories.find(QString(type + QString("Controller")));
         if (it == m_collideControllerFactories.end())
         {
+            qDebug() << "error, controller" << type << "doesn't exist";
             return -1;
         }
     }
