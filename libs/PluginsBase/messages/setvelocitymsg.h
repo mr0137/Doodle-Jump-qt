@@ -1,15 +1,11 @@
-#ifndef STARTENGINEMSG_H
-#define STARTENGINEMSG_H
+#ifndef SETVELOCITYMSG_H
+#define SETVELOCITYMSG_H
 
 #include <imessage.h>
 #include <pluginsbase_global.h>
 #include <QDataStream>
 
-enum EngineMode {
-    START, PAUSE, STOP
-};
-
-struct PLUGINSBASE_EXPORT SetModeEngineMsg : public IMessage
+struct PLUGINSBASE_EXPORT SetVelocityMsg : public IMessage
 {
     uint32_t getType() const override { return m_messageType; }
     static bool checkType(uint32_t type) { return type == m_messageType; }
@@ -18,13 +14,15 @@ struct PLUGINSBASE_EXPORT SetModeEngineMsg : public IMessage
     void deserialize(QDataStream *) override;
 
 public:
-    EngineMode mode;
+    // if velocity < 0 -> move left
+    // else if velocity > 0 -> move right
+    double velocity = 0;
 
 private:
-     const static uint32_t m_messageType = 7;
+     const static uint32_t m_messageType = 9;
 };
 
-struct PLUGINSBASE_EXPORT SetModeEngineMsgAns : public IMessage
+struct PLUGINSBASE_EXPORT SetVelocityMsgAns : public IMessage
 {
     uint32_t getType() const override { return m_messageType; }
     static bool checkType(uint32_t type) { return type == m_messageType; }
@@ -33,11 +31,10 @@ struct PLUGINSBASE_EXPORT SetModeEngineMsgAns : public IMessage
     void deserialize(QDataStream *) override;
 
 public:
-    bool modeChangedSuccess;
-    EngineMode mode;
+    bool success;
 
 private:
-     const static uint32_t m_messageType = 8;
+     const static uint32_t m_messageType = 10;
 };
 
-#endif // STARTENGINEMSG_H
+#endif // SETVELOCITYMSG_H

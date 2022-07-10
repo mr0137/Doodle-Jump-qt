@@ -35,6 +35,7 @@ SceneView::SceneView()
     setFlag(ItemHasContents, true);
     setFlag(QQuickItem::ItemAcceptsInputMethod, true);
     setFlag(QQuickItem::ItemIsFocusScope, true);
+    setAcceptedMouseButtons(Qt::LeftButton);
     setClip(true);
     setSmooth(true);
     setAntialiasing(true);
@@ -139,10 +140,58 @@ void SceneView::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeom
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
 }
 
+void SceneView::mousePressEvent(QMouseEvent *event)
+{
+    forceActiveFocus();
+    if (event->button() == Qt::MouseButton::LeftButton)
+    {
+        auto pos = event->localPos();
+        m_keyNegotiator->pressFire(pos);
+        event->setAccepted(true);
+    }
+    QQuickItem::mousePressEvent(event);
+}
+
 void SceneView::keyPressEvent(QKeyEvent *event)
 {
-
+    if (event->isAutoRepeat()) return;
+    if (event->key() == Qt::Key_A || event->key() == Qt::Key_Left)
+    {
+        qDebug() << "Left";
+        m_keyNegotiator->pressLeft();
+        event->ignore();
+    }
+    else if (event->key() == Qt::Key_D || event->key() == Qt::Key_Right)
+    {
+        qDebug() << "Right";
+        m_keyNegotiator->pressRight();
+        event->ignore();
+    }
+    else if (event->key() == Qt::Key_Escape || event->key() == Qt::Key_P)
+    {
+        m_keyNegotiator->pressPause();
+    }
     QQuickItem::keyPressEvent(event);
+}
+
+void SceneView::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->isAutoRepeat()) return;
+    if (event->key() == Qt::Key_A || event->key() == Qt::Key_Left)
+    {
+        qDebug() << "Left stop";
+        m_keyNegotiator->releaseLeft();
+    }
+    else if (event->key() == Qt::Key_D || event->key() == Qt::Key_Right)
+    {
+        qDebug() << "Right stop";
+        m_keyNegotiator->releaseRight();
+    }
+    else if (event->key() == Qt::Key_Escape || event->key() == Qt::Key_P)
+    {
+        m_keyNegotiator->releasePause();
+    }
+    QQuickItem::keyReleaseEvent(event);
 }
 
 Scene *SceneView::scene() const
@@ -169,4 +218,17 @@ void SceneView::setCurrentFPS(double newCurrentFPS)
         return;
     m_currentFPS = newCurrentFPS;
     emit currentFPSChanged();
+}
+
+KeyNegotiator *SceneView::keyNegotiator() const
+{
+    return m_keyNegotiator;
+}
+
+void SceneView::setKeyNegotiator(KeyNegotiator *newKeyNegotiator)
+{
+    if (m_keyNegotiator == newKeyNegotiator)
+        return;
+    m_keyNegotiator = newKeyNegotiator;
+    emit keyNegotiatorChanged();
 }

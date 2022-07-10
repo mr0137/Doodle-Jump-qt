@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <engineinterface.h>
 #include <base/scenebase.h>
+#include "keynegotiator.h"
 
 class Scene : public SceneBase
 {
@@ -12,9 +13,10 @@ class Scene : public SceneBase
     friend class SceneView;
 public:
     explicit Scene(QObject *parent = nullptr);
+    ~Scene();
     void addFactory(const QList<SceneItemFactory *> *factories) override;
     void setEngineInterface(EngineInterface * ei) override;
-
+    void setKeyNegotiator(KeyNegotiator* keyNegotiator);
     void startTest();
 
 protected:
@@ -26,11 +28,13 @@ private:
     void updateItems();
 
 private:
-    QMutex *m_mutex;
-    QTimer *m_timer = nullptr;
-    EngineInterface *m_engineInterface = nullptr;
+    QMutex* m_mutex;
+    QTimer* m_timer = nullptr;
+    EngineInterface* m_engineInterface = nullptr;
+    KeyNegotiator* m_keyNegotiator = nullptr;
     QList<SceneItem*> m_sceneItems;
     QMap<uint32_t, SceneItem*> m_sceneItemsRegistry;
+    uint32_t m_doodlerId = -1;
 };
 
 #endif // SCENE_H

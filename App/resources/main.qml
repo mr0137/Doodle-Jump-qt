@@ -17,7 +17,9 @@ Window {
         SceneView{
             id: sceneView
             anchors.fill: parent
+            keyNegotiator: AppCore.keyNegotiator
             scene: AppCore.scene
+            focus: true
         }
 
         Text {

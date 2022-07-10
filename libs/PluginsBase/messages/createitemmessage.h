@@ -7,11 +7,11 @@
 #include <QString>
 #include <QRectF>
 
-struct PLUGINSBASE_EXPORT CreateItemMsg : MessageBase
+struct PLUGINSBASE_EXPORT CreateItemMsg : IMessage
 {
     uint32_t getType() const override { return m_type; }
     static bool checkType(uint32_t type) { return type == m_type; }
-    static bool checkType(MessageBase *msg) { return msg->getType() == m_type; }
+    static bool checkType(IMessage *msg) { return msg->getType() == m_type; }
     void serialize(QDataStream *) const override;
     void deserialize(QDataStream *) override;
 
@@ -27,11 +27,11 @@ private:
     const static uint32_t m_type = 1;
 };
 
-struct PLUGINSBASE_EXPORT CreateItemMsgAns : MessageBase
+struct PLUGINSBASE_EXPORT CreateItemMsgAns : IMessage
 {
     uint32_t getType() const override { return m_messageType; }
     static bool checkType(uint32_t type) { return type == m_messageType; }
-    static bool checkType(MessageBase *msg) { return msg->getType() == m_messageType; }
+    static bool checkType(IMessage *msg) { return msg->getType() == m_messageType; }
     void serialize(QDataStream *) const override;
     void deserialize(QDataStream *) override;
 

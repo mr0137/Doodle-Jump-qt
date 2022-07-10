@@ -4,11 +4,11 @@
 #include <core_global.h>
 #include "imessage.h"
 
-struct CORE_EXPORT EmptyMessage : public MessageBase
+struct CORE_EXPORT EmptyMessage : public IMessage
 {
     uint32_t getType() const override { return m_type; }
     static bool checkType(uint32_t type) { return type == m_type; }
-    static bool checkType(MessageBase *msg) { return msg->getType() == m_type; }
+    static bool checkType(IMessage *msg) { return msg->getType() == m_type; }
     void serialize(QDataStream *) const override {}
     void deserialize(QDataStream *) override {}
 

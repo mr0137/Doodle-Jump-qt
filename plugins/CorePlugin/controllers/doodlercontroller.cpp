@@ -8,6 +8,7 @@ DoodlerController::DoodlerController()
     m_boundingRect = {0,0,50,50};
     m_collidableTypes = (static_cast<int>(ControllerType::SLAB) | static_cast<int>(ControllerType::MONSTER) | static_cast<int>(ControllerType::POWERUP) | static_cast<int>(ControllerType::TRAP));
     m_controllerType = ControllerType::DOODLER;
+    m_negotiator->registerMsgHandler(&DoodlerController::proceedSetVelocity, this);
 }
 
 void DoodlerController::proceedCollision(ControllerType ControllerType, CollisionType collisionType)
@@ -20,11 +21,32 @@ void DoodlerController::proceedCollision(ControllerType ControllerType, Collisio
 
 void DoodlerController::proceed(double dt)
 {
-    m_velocityY -= m_gravity / dt;
+    auto delta = m_gravity / dt;
+    m_velocityY -= delta;
+    if (!m_moving)
+    {
+        if (m_velocityX > 0 && m_velocityX - delta <= 0)
+        {
+            m_velocityX = 0;
+        }
+        else if (m_velocityX < 0 && m_velocityX + delta >= 0)
+        {
+            m_velocityX = 0;
+        }
+        else if (m_velocityX > 0)
+        {
+            m_velocityX -= delta;
+        }
+        else if (m_velocityX < 0)
+        {
+            m_velocityX += delta;
+        }
+    }
+
+    changeX(m_boundingRect.x() + m_velocityX);
     changeY(m_boundingRect.y() - m_velocityY);
 
     ChangeCoordsMsg msg;
-    msg.id = m_id;
     msg.x = m_boundingRect.x();
     msg.y = m_boundingRect.y();
 
@@ -34,4 +56,30 @@ void DoodlerController::proceed(double dt)
 void DoodlerController::init(QPointF pos)
 {
     changePos(pos);
+}
+
+SetVelocityMsgAns DoodlerController::proceedSetVelocity(SetVelocityMsg msg)
+{
+    if (msg.velocity == 1)
+    {
+        m_velocityX = 1;
+        m_moving = true;
+    }
+    else if (msg.velocity == -1)
+    {
+        m_velocityX = -1;
+        m_moving = true;
+    }
+    else if (msg.velocity == -2 && m_velocityX < 0)
+    {
+        m_moving = false;
+    }
+    else if (msg.velocity == 2 && m_velocityX > 0)
+    {
+        m_moving = false;
+    }
+    //qDebug() << m_velocityX << msg.velocity;
+    SetVelocityMsgAns ans;
+    ans.success = true;
+    return ans;
 }

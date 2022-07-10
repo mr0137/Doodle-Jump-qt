@@ -64,12 +64,9 @@ void SlabVMovingController::proceed(double dt)
         }
 
         ChangeCoordsMsg msg;
-        msg.id = m_id;
         msg.x = m_boundingRect.x();
         msg.y = m_boundingRect.y();
         //qDebug() << mode << m_internalVelocity;
-
-
 
         m_engine->getInterface()->sendFromEngine(msg, m_id);
     }

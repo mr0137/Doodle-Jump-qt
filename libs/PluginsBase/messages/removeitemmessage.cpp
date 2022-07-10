@@ -22,10 +22,10 @@ void RemoveItemMessage::deserialize(QDataStream *s)
 
 void RemoveItemMessageAns::serialize(QDataStream *s) const
 {
-    *s << modeChangedSuccess;
+    *s << success;
 }
 
 void RemoveItemMessageAns::deserialize(QDataStream *s)
 {
-    *s >> modeChangedSuccess;
+    *s >> success;
 }

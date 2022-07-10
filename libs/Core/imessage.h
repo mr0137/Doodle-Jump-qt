@@ -3,10 +3,10 @@
 
 #include <QDataStream>
 
-struct MessageBase
+struct IMessage
 {
-    MessageBase() = default;
-    virtual ~MessageBase() {}
+    IMessage() = default;
+    virtual ~IMessage() {}
 
     virtual uint32_t getType() const = 0;
     virtual void serialize(QDataStream *s) const = 0;

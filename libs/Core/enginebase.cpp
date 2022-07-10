@@ -39,7 +39,8 @@ void EngineBase::proceed(int uSecond, int dt)
 {
     Q_UNUSED(dt)
     //take msgs from interface and proceed them
-    while (true) {
+    while (true)
+    {
         QByteArray serMsg = m_interface->toEngineBase.pop();
         if (serMsg.isEmpty()) break;
         QDataStream stream(&serMsg, QIODevice::ReadOnly);
@@ -61,7 +62,8 @@ void EngineBase::proceed(int uSecond, int dt)
         }
     }
 
-    if(doMath){
+    if(doMath)
+    {
         m_levelGenerator->proceed(QRectF{0, 0, 750, 1334});
         //proceed physical items
         for (auto c : m_objectControllers)
@@ -122,6 +124,14 @@ bool EngineBase::removeController(uint32_t id)
 QByteArray EngineBase::proceedItemMsg(MessageHeader header, QDataStream &s)
 {
     for (auto c : m_objectControllers)
+    {
+        if (c.second->getPiId() == header.itemId)
+        {
+            return c.second->proceedMsg(&header, s);
+        }
+    }
+
+    for (auto c : m_collideObjectControllers)
     {
         if (c.second->getPiId() == header.itemId)
         {

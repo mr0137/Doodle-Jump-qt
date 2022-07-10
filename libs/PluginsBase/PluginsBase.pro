@@ -23,6 +23,8 @@ SOURCES += \
         messages/createitemmessage.cpp \
         messages/removeitemmessage.cpp \
         messages/setmodeenginemsg.cpp \
+        messages/setvelocitymsg.cpp \
+        messages/shootbulletmsg.cpp \
         tools/globalconfig.cpp \
         tools/pluginloader.cpp
 
@@ -34,6 +36,8 @@ HEADERS += \
         messages/createitemmessage.h \
         messages/removeitemmessage.h \
         messages/setmodeenginemsg.h \
+        messages/setvelocitymsg.h \
+        messages/shootbulletmsg.h \
         pluginsbase_global.h \
         tools/globalconfig.h \
         base/sceneitem.h \

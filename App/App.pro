@@ -10,6 +10,7 @@ SOURCES += \
     appcore.cpp \
     engine.cpp \
     imageprovider.cpp \
+    keynegotiator.cpp \
     main.cpp \
     scene/background/backgroundgrid.cpp \
     scene/background/backgroundnoise.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     appcore.h \
     engine.h \
     imageprovider.h \
+    keynegotiator.h \
     scene/background/backgroundgrid.h \
     scene/background/backgroundnoise.h \
     scene/fpsmonitor.h \

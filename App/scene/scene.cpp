@@ -5,6 +5,7 @@
 #include <messages/createitemmessage.h>
 #include <messages/removeitemmessage.h>
 #include <messages/setmodeenginemsg.h>
+#include <messages/setvelocitymsg.h>
 
 Scene::Scene(QObject *parent)
     : SceneBase(parent)
@@ -15,6 +16,11 @@ Scene::Scene(QObject *parent)
     connect(m_timer, &QTimer::timeout, this, [this](){
         updateItems();
     });
+}
+
+Scene::~Scene()
+{
+    delete m_mutex;
 }
 
 void Scene::addFactory(const QList<SceneItemFactory *> *factories)
@@ -58,6 +64,61 @@ void Scene::setEngineInterface(EngineInterface *ei)
     }
 }
 
+void Scene::setKeyNegotiator(KeyNegotiator *keyNegotiator)
+{
+    if (keyNegotiator != nullptr)
+    {
+        m_keyNegotiator = keyNegotiator;
+
+        connect(m_keyNegotiator, &KeyNegotiator::leftPressed, this, [this](){
+            if (m_doodlerId < 0) return;
+            SetVelocityMsg msg;
+            msg.velocity = -1.;
+            m_engineInterface->sendToEngine(msg, m_doodlerId);
+        });
+
+        connect(m_keyNegotiator, &KeyNegotiator::leftReleased, this, [this](){
+            if (m_doodlerId < 0) return;
+            SetVelocityMsg msg;
+            msg.velocity = -2;
+            m_engineInterface->sendToEngine(msg, m_doodlerId);
+        });
+
+        connect(m_keyNegotiator, &KeyNegotiator::rightPressed, this, [this](){
+            if (m_doodlerId < 0) return;
+            SetVelocityMsg msg;
+            msg.velocity = 1.;
+            m_engineInterface->sendToEngine(msg, m_doodlerId);
+        });
+
+        connect(m_keyNegotiator, &KeyNegotiator::rightReleased, this, [this](){
+            if (m_doodlerId < 0) return;
+            SetVelocityMsg msg;
+            msg.velocity = 2;
+            m_engineInterface->sendToEngine(msg, m_doodlerId);
+        });
+
+        connect(m_keyNegotiator, &KeyNegotiator::pausePressed, this, [](){
+            //! TODO finish pause implementation
+            //SetModeEngineMsg msg;
+            //msg.mode = EngineMode::PAUSE;
+            //m_engineInterface->sendToEngine(msg);
+        });
+
+        connect(m_keyNegotiator, &KeyNegotiator::pausePressed, this, [this](){
+            //! TODO finish pause implementation
+            SetModeEngineMsg msg;
+            msg.mode = EngineMode::START;
+            m_engineInterface->sendToEngine(msg);
+        });
+
+        connect(m_keyNegotiator, &KeyNegotiator::firePressed, this, [](QPointF pos){
+            //! TODO finish fire implementation
+             qDebug() << pos;
+        });
+    }
+}
+
 void Scene::startTest()
 {
     SetModeEngineMsg startEngineMsg;
@@ -71,16 +132,20 @@ void Scene::startTest()
 SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id, QVariantMap initialParams)
 {
     SceneItem * item = nullptr;
-    auto type = objectType;
 
-    if (m_factoriesHash.contains(type))
+    if (objectType.toUpper().contains("DOODLER"))
+    {
+        m_doodlerId = id;
+    }
+
+    if (m_factoriesHash.contains(objectType))
     {
         QVariantMap m{{"x", pos.x()}, {"y" , pos.y()}};
         for (const QString& str : initialParams.keys())
         {
             m[str] = initialParams[str];
         }
-        item = m_factoriesHash[type]->create(m);
+        item = m_factoriesHash[objectType]->create(m);
         item->setObjectName(objectType);
         item->setParent(nullptr);
         item->setId(id);

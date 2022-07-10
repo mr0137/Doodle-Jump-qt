@@ -56,9 +56,9 @@ protected:
     void changeY(double y);
 
 protected:
-    EngineBase *m_engine;
+    EngineBase *m_engine = nullptr;
     uint32_t m_id;
-    MessageNegotiator *m_negotiator;
+    MessageNegotiator *m_negotiator ;
 
     QRectF m_boundingRect;
     CollisionType m_collisionType = CollisionType::NONE;

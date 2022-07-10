@@ -9,7 +9,7 @@
 #include <map>
 
 
-struct MessageBase;
+struct IMessage;
 class MessageNegotiator;
 class EngineBase;
 class SampleDataGetter;
@@ -65,7 +65,6 @@ public:
     template<typename Msg, typename Callable>
     void addConnection(Callable f)
     {
-
         int type = Msg().getType();
 
         MessageConnector mConn;
@@ -101,10 +100,7 @@ private:
 
     std::map<int, std::function<int(QDataStream &s, int)>> msgFromEngineBaseHandlers;
     std::map<int, std::vector<MessageConnector>> msgConnections;
-
 };
-
-
 
 template<class Msg, class ... Msgs>
 void EngineInterface::sendFromEngine(Msg msg, Msgs ... msgs, uint32_t itemId)

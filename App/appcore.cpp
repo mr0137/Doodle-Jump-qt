@@ -7,9 +7,11 @@
 AppCore::AppCore(QObject *parent)
     : QObject{parent},
       m_scene(new Scene(this)),
-      m_engine(new Engine())
+      m_engine(new Engine()),
+      m_keyNegotiator(new KeyNegotiator(this))
 {
     m_scene->setEngineInterface(m_engine->getInterface());
+    m_scene->setKeyNegotiator(m_keyNegotiator);
 }
 
 AppCore *AppCore::getInstance()
@@ -97,4 +99,9 @@ void AppCore::load(AbstractPluginInterface *pluginInstance)
         m_engine->addControllerFactories(pluginInstance->getControllerFactories());
         m_scene->addFactory(pluginInstance->getSceneItemFactories());
     }
+}
+
+KeyNegotiator *AppCore::keyNegotiator()
+{
+    return m_keyNegotiator;
 }

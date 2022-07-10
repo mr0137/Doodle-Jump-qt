@@ -3,20 +3,20 @@
 
 void ChangeCoordsMsg::serialize(QDataStream *s) const
 {
-    *s << id << x << y << id;
+    *s << x << y;
 }
 
 void ChangeCoordsMsg::deserialize(QDataStream * s)
 {
-    *s >> id >> x >> y;
+    *s >> x >> y;
 }
 
 void ChangeCoordsMsgAns::serialize(QDataStream * s) const
 {;
-    *s << id << success;
+    *s << success;
 }
 
 void ChangeCoordsMsgAns::deserialize(QDataStream * s)
 {
-    *s >> id >> success;
+    *s >> success;
 }

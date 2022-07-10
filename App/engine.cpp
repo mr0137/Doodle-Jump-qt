@@ -8,13 +8,7 @@ using namespace std::chrono_literals;
 
 Engine::Engine(QObject *parent) : QObject(parent)
 {
-    m_timer = new QTimer(this);
-    connect(m_timer, &QTimer::timeout, this, [this](){
-
-    });
     m_lastCreatedPIID = 0;
-    //messageNegotiator->registerMsgHandler(&Engine::proceedCreateItemMsg, this);
-    //messageNegotiator->registerMsgHandler(&Engine::proceedRemoveItemMsg, this);
     messageNegotiator->registerMsgHandler(&Engine::proceedSetEngineModeMsg, this);
 
     m_levelGenerator->setCreateHandler([this](QString name, QPointF pos){
@@ -59,8 +53,6 @@ void Engine::start()
             m_interface->proceed();
         }
     });
-
-    //m_timer->start(5);
 }
 
 void Engine::stop()
@@ -86,29 +78,29 @@ void Engine::addCollideControllerFactories(const QList<ControllerFactory *> *val
     }
 }
 
-CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
-{
-    QString type = msg.objectType;
-
-    CreateItemMsgAns answ;
-    answ.objectType = msg.objectType;
-    answ.id = createObject(type, QPointF{msg.x, msg.y});
-    qDebug() << msg.objectType << m_lastCreatedPIID;
-    return answ;
-}
-
-RemoveItemMessageAns Engine::proceedRemoveItemMsg(RemoveItemMessage msg)
-{
-    RemoveItemMessageAns ans;
-    for (uint32_t id : msg.ids) {
-        if(!removeController(id)) {
-            ans.modeChangedSuccess = false;
-            return ans;
-        }
-    }
-    ans.modeChangedSuccess = true;
-    return ans;
-}
+//CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
+//{
+//    QString type = msg.objectType;
+//
+//    CreateItemMsgAns answ;
+//    answ.objectType = msg.objectType;
+//    answ.id = createObject(type, QPointF{msg.x, msg.y});
+//    qDebug() << msg.objectType << m_lastCreatedPIID;
+//    return answ;
+//}
+//
+//RemoveItemMessageAns Engine::proceedRemoveItemMsg(RemoveItemMessage msg)
+//{
+//    RemoveItemMessageAns ans;
+//    for (uint32_t id : msg.ids) {
+//        if(!removeController(id)) {
+//            ans.success = false;
+//            return ans;
+//        }
+//    }
+//    ans.success = true;
+//    return ans;
+//}
 
 SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
 {

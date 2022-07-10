@@ -18,7 +18,7 @@ void LevelGenerator::proceed(QRectF visualRect)
     {
         for (int i = 0; i < 8; i++)
         {
-            if (i == 3)
+            if (i == -1)
             {
                 createObject("SlabVMoving", {i * 100 + 8.3 * i, visualRect.height() - 30});
             }

@@ -58,7 +58,6 @@ void SlabHMovingController::proceed(double dt)
         }
 
         ChangeCoordsMsg msg;
-        msg.id = m_id;
         msg.x = m_boundingRect.x();
         msg.y = m_boundingRect.y();
 
