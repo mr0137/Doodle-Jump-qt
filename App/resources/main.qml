@@ -10,6 +10,14 @@ Window {
     visible: true
     title: qsTr("Hello World")
 
+    onWidthChanged: {
+        AppCore.scene.width = width
+    }
+
+    onHeightChanged: {
+        AppCore.scene.height = height
+    }
+
     Item{
         id: root
         anchors.fill: parent

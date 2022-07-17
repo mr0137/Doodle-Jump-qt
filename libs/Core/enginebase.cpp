@@ -35,6 +35,11 @@ LevelGenerator *EngineBase::getLevelGenerator() const
     return m_levelGenerator;
 }
 
+void EngineBase::setVisualRect(QRectF rect)
+{
+    m_visualRect = rect;
+}
+
 void EngineBase::proceed(int uSecond, int dt)
 {
     Q_UNUSED(dt)
@@ -64,11 +69,11 @@ void EngineBase::proceed(int uSecond, int dt)
 
     if(doMath)
     {
-        m_levelGenerator->proceed(QRectF{0, 0, 750, 1334});
+        m_levelGenerator->proceed(m_visualRect);
         //proceed physical items
         for (auto c : m_objectControllers)
         {
-            c.second->proceed(1000);
+            c.second->proceed(1000, m_visualRect);
         }
 
         for (auto d : m_collideObjectControllers)
@@ -80,16 +85,9 @@ void EngineBase::proceed(int uSecond, int dt)
                     m_collisionDetector->proceed(d.second, c.second);
                 }
             }
-            d.second->proceed(1000);
+            d.second->proceed(1000, m_visualRect);
         }
 
-        if(!(m_engineTime % 1000000))
-        {
-            for(auto && fn : oneSecondCallbacks)
-            {
-                fn();
-            }
-        }
         m_engineTime += 1000; // uSecond
         prevTime_us = uSecond;
     }

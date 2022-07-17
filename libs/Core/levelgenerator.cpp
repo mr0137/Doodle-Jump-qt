@@ -11,7 +11,7 @@ LevelGenerator::~LevelGenerator()
 
 }
 
-void LevelGenerator::proceed(QRectF visualRect)
+void LevelGenerator::proceed(const QRectF &visualRect)
 {
     static int i = 0;
     if (i++ == 0)

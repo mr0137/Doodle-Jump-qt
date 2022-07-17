@@ -14,7 +14,7 @@ class CORE_EXPORT LevelGenerator
 public:
     LevelGenerator();
     ~LevelGenerator();
-    void proceed(QRectF visualRect);
+    void proceed(const QRectF &visualRect);
     void addGenerateableObjectsTypes(AbstractObjectController* objectTypes, ControllerType controllerType);
 
     void setCreateHandler(const std::function<uint32_t (QString, QPointF)> &createHandler);

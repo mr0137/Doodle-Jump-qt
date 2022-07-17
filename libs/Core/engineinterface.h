@@ -70,16 +70,16 @@ public:
         MessageConnector mConn;
         mConn.connectToMsg<Msg>(f);
 
-        msgConnections[type].push_back(mConn);
+        m_msgConnections[type].push_back(mConn);
 
     }
 
     void runConnections(int type, QDataStream &s)
     {
-        if(msgConnections.find(type) != msgConnections.end())
+        if(m_msgConnections.find(type) != m_msgConnections.end())
         {
             int pos = s.device()->pos();
-            for(auto mConn : msgConnections[type])
+            for(auto mConn : m_msgConnections[type])
             {
                 mConn(s);
                 s.device()->seek(pos);
@@ -91,15 +91,15 @@ private:
     CircleBuffer<QByteArray> fromEngineBase;
     CircleBuffer<QByteArray> toEngineBase;
 
-    int nextMsgId=0;
-    int nextMsgIdEngineBaseSide=0;
+    int nextMsgId = 0;
+    int nextMsgIdEngineBaseSide = 0;
 
 
-    MessageAnswerDispatcher * answerDispatcher;
-    EngineBase *m_engine;
+    MessageAnswerDispatcher* m_answerDispatcher;
+    EngineBase* m_engine;
 
-    std::map<int, std::function<int(QDataStream &s, int)>> msgFromEngineBaseHandlers;
-    std::map<int, std::vector<MessageConnector>> msgConnections;
+    std::map<int, std::function<int(QDataStream &s, int)>> m_msgFromEngineBaseHandlers;
+    std::map<int, std::vector<MessageConnector>> m_msgConnections;
 };
 
 template<class Msg, class ... Msgs>
@@ -143,7 +143,7 @@ MsgAnswerHandler EngineInterface::sendToEngine(Msg msg, uint32_t itemId)
     //write msg
     msg.serialize(&s);
     toEngineBase.push(data);
-    MsgAnswerHandler handler(this->answerDispatcher, header.uid);
+    MsgAnswerHandler handler(m_answerDispatcher, header.uid);
     return handler;
 }
 
@@ -159,7 +159,7 @@ void EngineInterface::installStreamMsg(std::function<void(Msg, uint32_t)> lambda
         lambda(msg, itemId);
         return msg.getType();
     };
-    msgFromEngineBaseHandlers.emplace(type, funcTobeCalled);
+    m_msgFromEngineBaseHandlers.emplace(type, funcTobeCalled);
 }
 
 #endif // ENGINEINTERFACE_H

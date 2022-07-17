@@ -6,16 +6,19 @@ double FpsMonitor::recalculateFPS()
     qint64 currentTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
     m_times.push_back(currentTime);
 
-    while (m_times[0] < currentTime - 1000) {
+    while (m_times[0] < currentTime - 1000)
+    {
        m_times.pop_front();
     }
 
     int currentCount = m_times.length();
     m_currentFPS = (currentCount + m_cacheCount) / 2;
 
-    if (currentCount != m_cacheCount){
+    if (currentCount != m_cacheCount)
+    {
         m_history.push_back(m_currentFPS);
-        while(m_history.count() > 200){
+        while(m_history.count() > 200)
+        {
             m_history.pop_front();
         }
     }

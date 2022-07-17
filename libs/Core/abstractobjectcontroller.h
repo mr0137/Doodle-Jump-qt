@@ -28,7 +28,7 @@ public:
     virtual ~AbstractObjectController();
 
     virtual void proceedCollision(ControllerType controllerType, CollisionType collisionType) = 0;
-    virtual void proceed(double dt) = 0;
+    virtual void proceed(double dt, const QRectF &visualRect) = 0;
     virtual void init(QPointF startPoint) = 0;
 
     //random initialization

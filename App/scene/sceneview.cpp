@@ -77,6 +77,7 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         mainNode->backgroundNode->background->setRect(rect);
         mainNode->backgroundNode->grid->setRect(rect);
     }
+
     for (auto* item : qAsConst(m_scene->m_sceneItems))
     {
         if (item->needUpdate())
@@ -128,6 +129,8 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     }
 
     m_geometryChanged = false;
+
+    setVisualRect({rect.x(), m_offset, rect.width(), rect.height()});
 
     update();
     return mainNode;
@@ -231,4 +234,24 @@ void SceneView::setKeyNegotiator(KeyNegotiator *newKeyNegotiator)
         return;
     m_keyNegotiator = newKeyNegotiator;
     emit keyNegotiatorChanged();
+}
+
+const QRectF &SceneView::visualRect()
+{
+    return m_visualRect;
+}
+
+void SceneView::setVisualRect(const QRectF &newVisualRect)
+{
+    if (m_visualRect == newVisualRect)
+        return;
+    m_visualRect = newVisualRect;
+    m_scene->setViewRect(m_visualRect);
+    emit visualRectChanged();
+}
+
+void SceneView::moveToPos(double x, double y)
+{
+    setVisualRect({x, y, m_visualRect.width(), m_visualRect.height()});
+    update();
 }

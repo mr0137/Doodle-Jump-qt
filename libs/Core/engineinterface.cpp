@@ -2,14 +2,15 @@
 #include "engineinterface.h"
 #include "messagenegotiator.h"
 
+//store over than 500 object creation msgs
 EngineInterface::EngineInterface(): fromEngineBase(46000), toEngineBase(46000)
 {
-    answerDispatcher = new MessageAnswerDispatcher;
+    m_answerDispatcher = new MessageAnswerDispatcher;
 }
 
 EngineInterface::~EngineInterface()
 {
-    delete answerDispatcher;
+    delete m_answerDispatcher;
 }
 
 void EngineInterface::proceed()
@@ -27,12 +28,12 @@ void EngineInterface::proceed()
             int pos = s.device()->pos();
             if (h.isAnswer)
             {
-                answerDispatcher->proceedMsgAnswer(h, s);
+                m_answerDispatcher->proceedMsgAnswer(h, s);
             }
             else
             {
-                auto search = msgFromEngineBaseHandlers.find(h.type);
-                if(search != msgFromEngineBaseHandlers.end())
+                auto search = m_msgFromEngineBaseHandlers.find(h.type);
+                if(search != m_msgFromEngineBaseHandlers.end())
                 {
                     search->second(s, h.itemId);
                 }

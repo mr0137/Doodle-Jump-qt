@@ -9,6 +9,7 @@
 class SceneView : public QQuickItem
 {
     Q_OBJECT
+    Q_PROPERTY(QRectF visualRect READ visualRect WRITE setVisualRect NOTIFY visualRectChanged)
     Q_PROPERTY(Scene* scene READ scene WRITE setScene NOTIFY sceneChanged)
     Q_PROPERTY(KeyNegotiator* keyNegotiator READ keyNegotiator WRITE setKeyNegotiator NOTIFY keyNegotiatorChanged)
     Q_PROPERTY(double currentFPS READ currentFPS WRITE setCurrentFPS NOTIFY currentFPSChanged)
@@ -24,10 +25,13 @@ public:
     KeyNegotiator *keyNegotiator() const;
     void setKeyNegotiator(KeyNegotiator *newKeyNegotiator);
 
+    const QRectF &visualRect();
+
 signals:
     void sceneChanged();
     void currentFPSChanged();
     void keyNegotiatorChanged();
+    void visualRectChanged();
 
 protected:
     QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
@@ -37,12 +41,18 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
+    void setVisualRect(const QRectF &newVisualRect);
+    void moveToPos(double x, double y);
+
+private:
     Scene* m_scene = nullptr;
     bool m_geometryChanged = true;
     double m_currentFPS;
     FpsMonitor m_fpsMonitor;
     KeyNegotiator *m_keyNegotiator = nullptr;
+    double m_offset = 0;
 
+    QRectF m_visualRect;
 };
 
 #endif // SCENEVIEW_H

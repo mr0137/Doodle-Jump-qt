@@ -12,6 +12,11 @@ AppCore::AppCore(QObject *parent)
 {
     m_scene->setEngineInterface(m_engine->getInterface());
     m_scene->setKeyNegotiator(m_keyNegotiator);
+
+    connect(m_scene, &Scene::viewRectChanged, this, [this]()
+    {
+        m_engine->setVisualRect(m_scene->viewRect());
+    });
 }
 
 AppCore *AppCore::getInstance()

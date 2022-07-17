@@ -14,7 +14,7 @@ void SlabController::proceedCollision(ControllerType controllerType, CollisionTy
 
 }
 
-void SlabController::proceed(double dt)
+void SlabController::proceed(double dt, const QRectF &visualRect)
 {
 
 }

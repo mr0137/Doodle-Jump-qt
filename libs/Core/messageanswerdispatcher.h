@@ -11,33 +11,25 @@ class MessageAnswerDispatcher;
 class MsgAnswerHandler
 {
 public:
-    MsgAnswerHandler(MessageAnswerDispatcher * disp, int m_uid) : answerDispatcher(disp), m_uid(m_uid) {}
+    MsgAnswerHandler(MessageAnswerDispatcher * disp, int m_uid) : m_answerDispatcher(disp), m_uid(m_uid) {}
 
     template<class TAns>
     void onCompleted(std::function<void (TAns)> callback);
 
 private:
-    MessageAnswerDispatcher * answerDispatcher;
+    MessageAnswerDispatcher* m_answerDispatcher;
     int m_uid;
 };
 
 
 class MessageAnswerDispatcher
 {
+    friend class MsgAnswerHandler;
 public:
-
     MessageAnswerDispatcher();
-
-    void proceedMsgAnswer(const MessageHeader & h, QDataStream &s){
-        auto search = m_answerHandlers.find(h.uid);
-        if (search != m_answerHandlers.end()) {
-            search->second(h, s);
-            m_answerHandlers.erase(search->first);
-        }
-    }
+    void proceedMsgAnswer(const MessageHeader & h, QDataStream &s);
 
 private:
-    friend class MsgAnswerHandler;
     std::map<int, std::function<void(const MessageHeader & h, QDataStream &s)>> m_answerHandlers;
 
 };
@@ -58,6 +50,6 @@ void MsgAnswerHandler::onCompleted(std::function<void (TAns)> callback)
         }
     };
 
-    answerDispatcher->m_answerHandlers.insert({m_uid, lambda});
+    m_answerDispatcher->m_answerHandlers.insert({m_uid, lambda});
 }
 #endif // MESSAGEANSWERDISPATCHER_H

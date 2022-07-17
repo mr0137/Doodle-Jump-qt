@@ -10,7 +10,6 @@
 Scene::Scene(QObject *parent)
     : SceneBase(parent)
 {
-    m_mutex = new QMutex();
     m_timer = new QTimer(this);
 
     connect(m_timer, &QTimer::timeout, this, [this](){
@@ -20,7 +19,6 @@ Scene::Scene(QObject *parent)
 
 Scene::~Scene()
 {
-    delete m_mutex;
 }
 
 void Scene::addFactory(const QList<SceneItemFactory *> *factories)
@@ -35,16 +33,17 @@ void Scene::addFactory(const QList<SceneItemFactory *> *factories)
 
 void Scene::setEngineInterface(EngineInterface *ei)
 {
-    if(ei != nullptr){
+    if(ei != nullptr)
+    {
         m_engineInterface = ei;
 
         ei->installStreamMsg<CreateItemMsg>([this](CreateItemMsg msg, uint32_t itemId){
-            QMutexLocker locker(m_mutex);
+            QMutexLocker locker(&m_mutex);
             addItem(QPoint(msg.x, msg.y), msg.objectType, itemId, QVariantMap{{"width", msg.width}, {"height", msg.height}});
         });
 
-        ei->installStreamMsg<RemoveItemMessage>([this](RemoveItemMessage msg, uint32_t itemId){
-            QMutexLocker locker(m_mutex);
+        ei->installStreamMsg<RemoveItemMessage>([this](RemoveItemMessage , uint32_t itemId){
+            QMutexLocker locker(&m_mutex);
             if (m_sceneItemsRegistry.contains(itemId))
             {
                 auto object = m_sceneItemsRegistry[itemId];
@@ -53,7 +52,7 @@ void Scene::setEngineInterface(EngineInterface *ei)
         });
 
         ei->installStreamMsg<ChangeCoordsMsg>([this](ChangeCoordsMsg msg, uint32_t itemId){
-            QMutexLocker locker(m_mutex);
+            QMutexLocker locker(&m_mutex);
             if (m_sceneItemsRegistry.contains(itemId))
             {
                 auto object = m_sceneItemsRegistry[itemId];
@@ -173,7 +172,7 @@ void Scene::removeItem(SceneItem *item)
 
 void Scene::updateItems()
 {
-    QMutexLocker locker(m_mutex);
+    QMutexLocker locker(&m_mutex);
     for (int i = m_sceneItems.length() - 1; i >= 0  ; i--)
     {
         if (m_sceneItems[i]->parent() == nullptr)
@@ -186,4 +185,30 @@ void Scene::updateItems()
             removeItem(m_sceneItems[i]);
         }
     }
+}
+
+const QRectF &Scene::resolution()
+{
+    return m_resolution;
+}
+
+void Scene::setResolution(const QRectF &newResolution)
+{
+    if (m_resolution == newResolution)
+        return;
+    m_resolution = newResolution;
+    emit resolutionChanged(m_resolution);
+}
+
+const QRectF &Scene::viewRect() const
+{
+    return m_viewRect;
+}
+
+void Scene::setViewRect(const QRectF &newViewRect)
+{
+    if (m_viewRect == newViewRect)
+        return;
+    m_viewRect = newViewRect;
+    emit viewRectChanged(m_viewRect);
 }

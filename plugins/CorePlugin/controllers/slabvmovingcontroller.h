@@ -7,13 +7,13 @@ class SlabVMovingController : public SlabController
 {
 public:
     SlabVMovingController();
-    virtual void proceed(double dt) override;
+    virtual void proceed(double dt, const QRectF & visualRect) override;
     virtual void init(QPointF startPoint) override;
 
 private:
     bool m_inited = false;
-    qreal left;
-    qreal right;
+    qreal top = 100;
+    qreal bottom = 1200;
     qreal speed = 1.5;
     qreal velocity = 50;
     qreal m_internalVelocity;

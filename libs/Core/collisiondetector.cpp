@@ -6,11 +6,11 @@ CollisionDetector::CollisionDetector()
 
 }
 
-void CollisionDetector::proceed(AbstractObjectController *doodlerController, AbstractObjectController *object)
+void CollisionDetector::proceed(AbstractObjectController *targetController, AbstractObjectController *object)
 {
-    if (doodlerController->getVelocityY() < 0)
+    if (targetController->getVelocityY() < 0)
     {
-        QRectF doodlerRect = doodlerController->getBoundingRect();
+        QRectF doodlerRect = targetController->getBoundingRect();
         QRectF objectRect = object->getBoundingRect();
         if (doodlerRect.intersects(objectRect))
         {
@@ -18,7 +18,7 @@ void CollisionDetector::proceed(AbstractObjectController *doodlerController, Abs
             {
                 if (doodlerRect.y() + doodlerRect.height() >= objectRect.y() + objectRect.height() / 2)
                 {
-                    doodlerController->proceedCollision(object->getControllerType(), CollisionType::BOTTOM);
+                    targetController->proceedCollision(object->getControllerType(), CollisionType::BOTTOM);
                 }
             }
         }

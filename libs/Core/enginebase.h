@@ -21,12 +21,12 @@ public:
 
     EngineInterface *getInterface() const;
     LevelGenerator *getLevelGenerator() const;
+    void setVisualRect(QRectF rect);
 
     virtual void start() = 0;
     virtual void stop() = 0;
 
     unsigned long long engineTime() const;
-    std::vector<std::function<void()>> oneSecondCallbacks;
 
     const std::map<uint32_t, AbstractObjectController *> *getPiControllers();
 
@@ -40,11 +40,12 @@ protected:
     uint32_t m_lastCreatedPIID = 0;
     std::map<uint32_t, AbstractObjectController*> m_objectControllers;
     std::map<uint32_t, AbstractObjectController*> m_collideObjectControllers;
-    MessageNegotiator *messageNegotiator;
-    EngineInterface *m_interface;
-    LevelGenerator *m_levelGenerator;
-    CollisionDetector *m_collisionDetector;
+    MessageNegotiator* messageNegotiator = nullptr;
+    EngineInterface* m_interface = nullptr;
+    LevelGenerator* m_levelGenerator = nullptr;
+    CollisionDetector* m_collisionDetector = nullptr;
     bool doMath = false;
+    QRectF m_visualRect;
 
 private:
     int prevTime_us = 0;

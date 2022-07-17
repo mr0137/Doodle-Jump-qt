@@ -8,7 +8,7 @@ SlabVMovingController::SlabVMovingController() : SlabController()
 
 }
 
-void SlabVMovingController::proceed(double dt)
+void SlabVMovingController::proceed(double dt, const QRectF &visualRect)
 {
     if (m_inited)
     {
@@ -16,7 +16,7 @@ void SlabVMovingController::proceed(double dt)
         {
             auto step = (m_internalVelocity * dt/100000) * speed;
             changeY(m_boundingRect.y() - step);
-            if (100 > m_boundingRect.y() - step)
+            if (top > m_boundingRect.y() - step)
             {
                 mode = VELOCITY_DOWN;
                 mode.setFlag(DOWN);
@@ -33,7 +33,7 @@ void SlabVMovingController::proceed(double dt)
         {
             auto step = (m_internalVelocity * dt/100000) * speed;
             changeY(m_boundingRect.y() + step);
-            if (1200 < m_boundingRect.y() + step)
+            if (bottom < m_boundingRect.y() + step)
             {
                 mode = VELOCITY_DOWN;
                 mode.setFlag(UP);

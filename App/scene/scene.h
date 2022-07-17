@@ -11,6 +11,8 @@ class Scene : public SceneBase
 {
     Q_OBJECT
     friend class SceneView;
+    Q_PROPERTY(QRectF resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
+    Q_PROPERTY(QRectF viewRect READ viewRect WRITE setViewRect NOTIFY viewRectChanged)
 public:
     explicit Scene(QObject *parent = nullptr);
     ~Scene();
@@ -18,6 +20,16 @@ public:
     void setEngineInterface(EngineInterface * ei) override;
     void setKeyNegotiator(KeyNegotiator* keyNegotiator);
     void startTest();
+
+    const QRectF &resolution();
+    void setResolution(const QRectF &newResolution);
+
+    const QRectF &viewRect() const;
+    void setViewRect(const QRectF &newViewRect);
+
+signals:
+    void resolutionChanged(QRectF);
+    void viewRectChanged(QRectF);
 
 protected:
     SceneItem *addItem(QPoint pos, QString objectName, uint32_t id, QVariantMap initialParams = {}) override;
@@ -28,13 +40,15 @@ private:
     void updateItems();
 
 private:
-    QMutex* m_mutex;
+    QMutex m_mutex;
     QTimer* m_timer = nullptr;
     EngineInterface* m_engineInterface = nullptr;
     KeyNegotiator* m_keyNegotiator = nullptr;
     QList<SceneItem*> m_sceneItems;
     QMap<uint32_t, SceneItem*> m_sceneItemsRegistry;
     uint32_t m_doodlerId = -1;
+    QRectF m_resolution;
+    QRectF m_viewRect;
 };
 
 #endif // SCENE_H
