@@ -2,6 +2,7 @@
 
 #include <base/sceneitem.h>
 #include <messages/changecoordsmsg.h>
+#include <messages/changeviewrect.h>
 #include <messages/createitemmessage.h>
 #include <messages/removeitemmessage.h>
 #include <messages/setmodeenginemsg.h>
@@ -59,6 +60,11 @@ void Scene::setEngineInterface(EngineInterface *ei)
                 object->setX(msg.x);
                 object->setY(msg.y);
             }
+        });
+
+        ei->installStreamMsg<ChangeViewRectMsg>([this](ChangeViewRectMsg msg, uint32_t itemId){
+            QMutexLocker locker(&m_mutex);
+            setViewRect({m_viewRect.x(), msg.y, m_viewRect.width(), m_viewRect.height()});
         });
     }
 }
@@ -126,6 +132,11 @@ void Scene::startTest()
         qDebug() << ":start" << ans.modeChangedSuccess;
          m_timer->start(20);
     });
+}
+
+uint32_t Scene::getDoodlerId()
+{
+    return m_doodlerId;
 }
 
 SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id, QVariantMap initialParams)

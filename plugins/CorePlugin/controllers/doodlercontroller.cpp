@@ -1,6 +1,7 @@
 #include "doodlercontroller.h"
 
 #include <messages/changecoordsmsg.h>
+#include <messages/changeviewrect.h>
 #include <engineinterface.h>
 
 DoodlerController::DoodlerController()
@@ -19,8 +20,9 @@ void DoodlerController::proceedCollision(ControllerType ControllerType, Collisio
     }
 }
 
-void DoodlerController::proceed(double dt, const QRectF &visualRect)
+void DoodlerController::proceed(double dt, QRectF &visualRect)
 {
+    bool flyMode = false;
     auto delta = m_gravity / dt;
     m_velocityY -= delta;
     if (!m_moving)
@@ -43,20 +45,26 @@ void DoodlerController::proceed(double dt, const QRectF &visualRect)
         }
     }
 
-    if (m_boundingRect.x() + m_boundingRect.width()/2 + m_velocityX >= visualRect.width())
+    if (!flyMode)
     {
-        changeX(m_boundingRect.x() + m_velocityX + m_boundingRect.width()/2 - visualRect.width());
-    }
-    else if (m_boundingRect.x() + m_velocityX <= visualRect.x() - m_boundingRect.width()/2)
-    {
-        changeX(m_boundingRect.x() + m_velocityX + visualRect.width());
+        if (m_boundingRect.x() + m_boundingRect.width()/2 + m_velocityX >= visualRect.width())
+        {
+            changeX(m_boundingRect.x() + m_velocityX + m_boundingRect.width()/2 - visualRect.width());
+        }
+        else if (m_boundingRect.x() + m_velocityX <= visualRect.x() - m_boundingRect.width()/2)
+        {
+            changeX(m_boundingRect.x() + m_velocityX + visualRect.width());
+        }
+        else
+        {
+            changeX(m_boundingRect.x() + m_velocityX);
+        }
+        changeY(m_boundingRect.y() + m_velocityY);
     }
     else
     {
-        changeX(m_boundingRect.x() + m_velocityX);
+        changeY(m_boundingRect.y() - m_velocityX);
     }
-
-    changeY(m_boundingRect.y() - m_velocityY);
 
     ChangeCoordsMsg msg;
     msg.x = m_boundingRect.x();

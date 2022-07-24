@@ -42,6 +42,8 @@ Window {
             width: 200
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.botton
+            focus: false
+            activeFocusOnTab: false
 
             onPressed: {
                 AppCore.start();

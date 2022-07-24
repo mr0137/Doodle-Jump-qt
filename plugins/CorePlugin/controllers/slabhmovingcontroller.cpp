@@ -8,7 +8,7 @@ SlabHMovingController::SlabHMovingController() : SlabController()
 
 }
 
-void SlabHMovingController::proceed(double dt, const QRectF &visualRect)
+void SlabHMovingController::proceed(double dt, QRectF &visualRect)
 {
     if (m_inited)
     {

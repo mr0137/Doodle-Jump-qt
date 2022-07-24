@@ -20,6 +20,7 @@ SOURCES += \
         base/sceneitem.cpp \
         AbstractPluginInterface.cpp \
         messages/changecoordsmsg.cpp \
+        messages/changeviewrect.cpp \
         messages/createitemmessage.cpp \
         messages/removeitemmessage.cpp \
         messages/setmodeenginemsg.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
         factories/controllerfactory.h \
         factories/sceneitemfactory.h \
         messages/changecoordsmsg.h \
+        messages/changeviewrect.h \
         messages/createitemmessage.h \
         messages/removeitemmessage.h \
         messages/setmodeenginemsg.h \

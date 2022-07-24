@@ -20,6 +20,7 @@ public:
     void setEngineInterface(EngineInterface * ei) override;
     void setKeyNegotiator(KeyNegotiator* keyNegotiator);
     void startTest();
+    uint32_t getDoodlerId();
 
     const QRectF &resolution();
     void setResolution(const QRectF &newResolution);

@@ -8,7 +8,7 @@ SlabVMovingController::SlabVMovingController() : SlabController()
 
 }
 
-void SlabVMovingController::proceed(double dt, const QRectF &visualRect)
+void SlabVMovingController::proceed(double dt, QRectF &visualRect)
 {
     if (m_inited)
     {
@@ -26,7 +26,6 @@ void SlabVMovingController::proceed(double dt, const QRectF &visualRect)
                 m_internalVelocity = 0;
                 mode = VELOCITY_UP;
                 mode.setFlag(UP, true);
-                //mode.setFlag(LEFT, false);
             }
         }
         else if (mode.testFlag(UP))
@@ -44,7 +43,6 @@ void SlabVMovingController::proceed(double dt, const QRectF &visualRect)
                 m_internalVelocity = 0;
                 mode = VELOCITY_UP;
                 mode.setFlag(DOWN, true);
-                //mode.setFlag(RIGHT, false);
             }
         }
 
@@ -66,7 +64,6 @@ void SlabVMovingController::proceed(double dt, const QRectF &visualRect)
         ChangeCoordsMsg msg;
         msg.x = m_boundingRect.x();
         msg.y = m_boundingRect.y();
-        //qDebug() << mode << m_internalVelocity;
 
         m_engine->getInterface()->sendFromEngine(msg, m_id);
     }

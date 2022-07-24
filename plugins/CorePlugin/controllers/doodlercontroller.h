@@ -10,7 +10,7 @@ public:
     DoodlerController();
 
     virtual void proceedCollision(ControllerType controllerType, CollisionType collisionType) override;
-    virtual void proceed(double dt, const QRectF &visualRect) override;
+    virtual void proceed(double dt, QRectF &visualRect) override;
     virtual void init(QPointF pos) override;
 
 private:

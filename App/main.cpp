@@ -21,7 +21,6 @@ int main(int argc, char *argv[])
         AppCore::getInstance()->stop();
     });
 
-    //auto ei = coreEngine->getInterface();
     qmlRegisterType<QObject>("KLib", 1, 0, "Null");
 
     AppCore::getInstance()->init(QString(argv[0]));

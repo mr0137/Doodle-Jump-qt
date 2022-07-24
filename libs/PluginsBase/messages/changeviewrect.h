@@ -1,12 +1,12 @@
-#ifndef SHOOTBULLETMSG_H
-#define SHOOTBULLETMSG_H
+#ifndef CHANGEVIEWRECT_H
+#define CHANGEVIEWRECT_H
 
 #include <imessage.h>
 #include <pluginsbase_global.h>
-#include <QDataStream>
-#include <QPointF>
+#include <QString>
+#include <QRectF>
 
-struct PLUGINSBASE_EXPORT ShootBulletMsg : public IMessage
+struct PLUGINSBASE_EXPORT ChangeViewRectMsg : IMessage
 {
     uint32_t getType() const override { return m_messageType; }
     static bool checkType(uint32_t type) { return type == m_messageType; }
@@ -15,14 +15,13 @@ struct PLUGINSBASE_EXPORT ShootBulletMsg : public IMessage
     void deserialize(QDataStream *) override;
 
 public:
-    double x;
     double y;
 
 private:
-     const static uint32_t m_messageType = 11;
+    const static uint32_t m_messageType = 13;
 };
 
-struct PLUGINSBASE_EXPORT ShootBulletMsgAns : public IMessage
+struct PLUGINSBASE_EXPORT ChangeViewRectMsgAns : IMessage
 {
     uint32_t getType() const override { return m_messageType; }
     static bool checkType(uint32_t type) { return type == m_messageType; }
@@ -34,6 +33,7 @@ public:
     bool success;
 
 private:
-     const static uint32_t m_messageType = 12;
+    const static uint32_t m_messageType = 14;
 };
-#endif // SHOOTBULLETMSG_H
+
+#endif // CHANGEVIEWRECT_H

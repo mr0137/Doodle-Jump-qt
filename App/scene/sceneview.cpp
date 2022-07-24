@@ -46,7 +46,9 @@ SceneView::SceneView()
 QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 {
     MainNode* mainNode = static_cast<MainNode*>(node);
-    //background test display
+
+    QRectF rect = boundingRect();
+
     if (!mainNode)
     {
         mainNode = new MainNode();
@@ -62,9 +64,11 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
         mainNode->backgroundNode->appendChildNode(mainNode->backgroundNode->background);
         mainNode->backgroundNode->appendChildNode(mainNode->backgroundNode->grid);
         m_geometryChanged = true;
-    }
 
-    QRectF rect = boundingRect();
+        m_offset = rect.height();
+        mainNode->shiftYTransformNode->setMatrix(QTransform().translate(0, m_offset));
+        mainNode->shiftYTransformNode->markDirty(QSGNode::DirtyMatrix);
+    }
 
     if (rect.isEmpty())
     {
@@ -103,7 +107,7 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
                 img.fill(Qt::red);
                 auto t = window()->createTextureFromImage(img, QQuickWindow::TextureHasAlphaChannel);
                 child->texture->setTexture(t);
-                child->texture->setRect(QRectF(item->x(), item->y(), img.width(), img.height()));
+                child->texture->setRect(QRectF(item->x(), -item->y(), img.width(), img.height()));
                 mainNode->shiftYTransformNode->appendChildNode(child);
                 mainNode->childs[item->id()] = child;
             }
@@ -111,15 +115,26 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
             if (item->needUpdate())
             {
                 auto g = child->geometry();
-                g->vertexDataAsPoint2D()[0].set(item->x(), item->y());
-                g->vertexDataAsPoint2D()[1].set(item->x() + item->width(), item->y());
-                g->vertexDataAsPoint2D()[2].set(item->x() + item->width(), item->y() + item->height());
-                g->vertexDataAsPoint2D()[3].set(item->x(), item->y() + item->height());
-                child->texture->setRect(QRectF(item->x(), item->y(), item->width(), item->height()));
+                g->vertexDataAsPoint2D()[0].set(item->x(), -item->y());
+                g->vertexDataAsPoint2D()[1].set(item->x() + item->width(), -item->y());
+                g->vertexDataAsPoint2D()[2].set(item->x() + item->width(), -(item->y() - item->height()));
+                g->vertexDataAsPoint2D()[3].set(item->x(), -(item->y() - item->height()));
+                child->texture->setRect(QRectF(item->x(), -item->y(), item->width(), item->height()));
                 child->setGeometry(g);
                 child->markDirty(QSGNode::DirtyGeometry | QSGNode::DirtyMaterial);
                 item->setNeedUpdate(false);
             }
+        }
+
+        if (item->id() == m_scene->getDoodlerId())
+        {
+            double limit = m_visualRect.y() - m_visualRect.height() * 0.3;
+            double currDoodleY = item->boundingRect().y();
+            if (limit <= currDoodleY)
+            {
+                m_offset += currDoodleY - limit;
+            }
+            qDebug() << limit << currDoodleY << m_visualRect << m_visualRect.y() - (limit - currDoodleY);
         }
     }
 
@@ -131,6 +146,8 @@ QSGNode* SceneView::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
     m_geometryChanged = false;
 
     setVisualRect({rect.x(), m_offset, rect.width(), rect.height()});
+    mainNode->shiftYTransformNode->setMatrix(QTransform().translate(0, m_visualRect.y()));
+    mainNode->shiftYTransformNode->markDirty(QSGNode::DirtyMatrix);
 
     update();
     return mainNode;

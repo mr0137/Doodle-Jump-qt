@@ -20,11 +20,12 @@ void LevelGenerator::proceed(const QRectF &visualRect)
         {
             if (i == -1)
             {
-                createObject("SlabVMoving", {i * 100 + 8.3 * i, visualRect.height() - 30});
+                createObject("SlabVMoving", {i * 100 + 8.3 * i, 30});
             }
             else
             {
-                createObject("Slab", {i * 100 + 8.3 * i, visualRect.height() - 30});
+                createObject("Slab", {i * 100 + 8.3 * i, 30});
+                createObject("Slab", {200., i * 400.});
             }
         }
         createObject("Doodler", {424, 667});

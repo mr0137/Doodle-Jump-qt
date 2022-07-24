@@ -7,7 +7,7 @@ class SlabHMovingController : public SlabController
 {
 public:
     SlabHMovingController();
-    virtual void proceed(double dt, const QRectF & visualRect) override;
+    virtual void proceed(double dt, QRectF & visualRect) override;
     virtual void init(QPointF startPoint) override;
 
 private:

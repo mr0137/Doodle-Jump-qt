@@ -40,7 +40,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 
-private:
+private slots:
     void setVisualRect(const QRectF &newVisualRect);
     void moveToPos(double x, double y);
 
