@@ -50,9 +50,19 @@ private:
     double m_currentFPS;
     FpsMonitor m_fpsMonitor;
     KeyNegotiator *m_keyNegotiator = nullptr;
-    double m_offset = 0;
+    qreal m_offset = 0;
 
     QRectF m_visualRect;
+
+    enum UpdateReason{
+        DEFAULT = 0x00,
+        SHIFT_Y = 0x01,
+        RIGHT = 0x02,
+        VELOCITY_DOWN = 0x04,
+        VELOCITY_UP = 0x08
+    };
+    Q_DECLARE_FLAGS(MovingModes, UpdateReason)
+    MovingModes mode;
 };
 
 #endif // SCENEVIEW_H

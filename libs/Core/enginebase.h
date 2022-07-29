@@ -1,4 +1,4 @@
-#ifndef ENGINEBASE_H
+ #ifndef ENGINEBASE_H
 #define ENGINEBASE_H
 
 #include <vector>
@@ -28,8 +28,6 @@ public:
 
     unsigned long long engineTime() const;
 
-    const std::map<uint32_t, AbstractObjectController *> *getPiControllers();
-
 protected:
     void proceed(int uSecond, int dt);
     bool removeController(uint32_t id);
@@ -38,8 +36,8 @@ protected:
 
 protected:
     uint32_t m_lastCreatedPIID = 0;
-    std::map<uint32_t, AbstractObjectController*> m_objectControllers;
-    std::map<uint32_t, AbstractObjectController*> m_collideObjectControllers;
+    QMap<uint32_t, AbstractObjectController*> m_objectControllers;
+    QMap<uint32_t, AbstractObjectController*> m_collideObjectControllers;
     MessageNegotiator* messageNegotiator = nullptr;
     EngineInterface* m_interface = nullptr;
     LevelGenerator* m_levelGenerator = nullptr;

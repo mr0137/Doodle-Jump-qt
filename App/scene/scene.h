@@ -13,6 +13,7 @@ class Scene : public SceneBase
     friend class SceneView;
     Q_PROPERTY(QRectF resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
     Q_PROPERTY(QRectF viewRect READ viewRect WRITE setViewRect NOTIFY viewRectChanged)
+    Q_PROPERTY(int objectsCount READ objectsCount WRITE setObjectsCount NOTIFY objectsCountChanged)
 public:
     explicit Scene(QObject *parent = nullptr);
     ~Scene();
@@ -28,17 +29,21 @@ public:
     const QRectF &viewRect() const;
     void setViewRect(const QRectF &newViewRect);
 
+    void updateItems();
+
+    int objectsCount() const;
+    void setObjectsCount(int newObjectsCount);
+
 signals:
     void resolutionChanged(QRectF);
     void viewRectChanged(QRectF);
+
+    void objectsCountChanged();
 
 protected:
     SceneItem *addItem(QPoint pos, QString objectName, uint32_t id, QVariantMap initialParams = {}) override;
     SceneItem *addItem(double x, double y, QString type, uint32_t id) override;
     void removeItem(SceneItem *item) override;
-
-private:
-    void updateItems();
 
 private:
     QMutex m_mutex;
@@ -50,6 +55,7 @@ private:
     uint32_t m_doodlerId = -1;
     QRectF m_resolution;
     QRectF m_viewRect;
+    int m_objectsCount;
 };
 
 #endif // SCENE_H

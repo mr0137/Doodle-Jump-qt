@@ -1,5 +1,6 @@
 #include "collisiondetector.h"
 #include "abstractobjectcontroller.h"
+#include <QDebug>
 
 CollisionDetector::CollisionDetector()
 {
@@ -10,17 +11,15 @@ void CollisionDetector::proceed(AbstractObjectController *targetController, Abst
 {
     if (targetController->getVelocityY() < 0)
     {
-        QRectF doodlerRect = targetController->getBoundingRect();
+        QRectF targetRect = targetController->getBoundingRect();
         QRectF objectRect = object->getBoundingRect();
-        if (doodlerRect.intersects(objectRect))
+        if (targetRect.y() - targetRect.height() <= objectRect.y() && targetRect.y() - targetRect.height() >= objectRect.y() - objectRect.height() * 0.2)
         {
-            if (doodlerRect.x() <= objectRect.x() + objectRect.width() && doodlerRect.x() + doodlerRect.width() >= objectRect.x())
+            if (targetRect.x() <= objectRect.x() + objectRect.width() && targetRect.x() + targetRect.width() >= objectRect.x())
             {
-                if (doodlerRect.y() + doodlerRect.height() >= objectRect.y() + objectRect.height() / 2)
-                {
-                    targetController->proceedCollision(object->getControllerType(), CollisionType::BOTTOM);
-                }
+                targetController->proceedCollision(object->getControllerType(), CollisionType::BOTTOM);
             }
         }
     }
+    //else if
 }

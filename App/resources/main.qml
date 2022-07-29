@@ -31,10 +31,27 @@ Window {
         }
 
         Text {
+            id: fpsText
             anchors.right: sceneView.right
             anchors.top: sceneView.top
             font.pixelSize: 20
             text: "FPS: " + sceneView.currentFPS
+        }
+
+        Text {
+            id: posText
+            anchors.right: sceneView.right
+            anchors.top: fpsText.bottom
+            font.pixelSize: 20
+            text: "Pos: " + sceneView.visualRect.y.toFixed(0)
+        }
+
+        Text {
+            id: objText
+            anchors.right: sceneView.right
+            anchors.top: posText.bottom
+            font.pixelSize: 20
+            text: "Obj: " + AppCore.scene.objectsCount
         }
 
         Button{

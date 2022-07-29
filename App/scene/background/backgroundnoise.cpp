@@ -75,7 +75,7 @@ BackgroundNoise::BackgroundNoise(QQuickWindow *window)
     setFlag(OwnsMaterial, true);
 
     QSGGeometry *g = new QSGGeometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4);
-    QSGGeometry::updateTexturedRectGeometry(g, QRect(), QRect());
+    QSGGeometry::updateTexturedRectGeometry(g, QRectF(), QRectF());
     setGeometry(g);
     setFlag(OwnsGeometry, true);
 }

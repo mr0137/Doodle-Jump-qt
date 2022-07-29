@@ -1,5 +1,7 @@
 #include "scene.h"
+#include "qthread.h"
 
+#include <QThread>
 #include <base/sceneitem.h>
 #include <messages/changecoordsmsg.h>
 #include <messages/changeviewrect.h>
@@ -61,11 +63,6 @@ void Scene::setEngineInterface(EngineInterface *ei)
                 object->setY(msg.y);
             }
         });
-
-        ei->installStreamMsg<ChangeViewRectMsg>([this](ChangeViewRectMsg msg, uint32_t itemId){
-            QMutexLocker locker(&m_mutex);
-            setViewRect({m_viewRect.x(), msg.y, m_viewRect.width(), m_viewRect.height()});
-        });
     }
 }
 
@@ -119,18 +116,18 @@ void Scene::setKeyNegotiator(KeyNegotiator *keyNegotiator)
 
         connect(m_keyNegotiator, &KeyNegotiator::firePressed, this, [](QPointF pos){
             //! TODO finish fire implementation
-             qDebug() << pos;
+             //qDebug() << pos;
         });
     }
 }
 
 void Scene::startTest()
 {
+    m_timer->start(20);
     SetModeEngineMsg startEngineMsg;
     startEngineMsg.mode = EngineMode::START;
     m_engineInterface->sendToEngine(startEngineMsg).onCompleted<SetModeEngineMsgAns>([this](const SetModeEngineMsgAns & ans){
         qDebug() << ":start" << ans.modeChangedSuccess;
-         m_timer->start(20);
     });
 }
 
@@ -157,12 +154,13 @@ SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id, QVariantM
         }
         item = m_factoriesHash[objectType]->create(m);
         item->setObjectName(objectType);
-        item->setParent(nullptr);
+        //item->setParent(this);
         item->setId(id);
-        qDebug() << id;
+        //qDebug() << id;
 
         m_sceneItemsRegistry[id] = item;
         m_sceneItems.push_back(item);
+        setObjectsCount(m_sceneItems.count());
     }
     return item;
 }
@@ -177,7 +175,9 @@ void Scene::removeItem(SceneItem *item)
     if (item != nullptr)
     {
         m_sceneItems.removeAll(item);
-        item->deleteLater();
+        //qDebug() << "Scene remove:" << item->id();
+        delete item;
+        setObjectsCount(m_sceneItems.count());
     }
 }
 
@@ -186,10 +186,11 @@ void Scene::updateItems()
     QMutexLocker locker(&m_mutex);
     for (int i = m_sceneItems.length() - 1; i >= 0  ; i--)
     {
-        if (m_sceneItems[i]->parent() == nullptr)
-        {
-            m_sceneItems[i]->setParent(this);
-        }
+        //if (m_sceneItems[i]->parent() == nullptr)
+        //{
+        //    m_sceneItems[i]->moveToThread(QThread::currentThread());
+        //    m_sceneItems[i]->setParent(this);
+        //}
 
         if (m_sceneItems[i]->removingState() == SceneItem::READY)
         {
@@ -222,4 +223,17 @@ void Scene::setViewRect(const QRectF &newViewRect)
         return;
     m_viewRect = newViewRect;
     emit viewRectChanged(m_viewRect);
+}
+
+int Scene::objectsCount() const
+{
+    return m_objectsCount;
+}
+
+void Scene::setObjectsCount(int newObjectsCount)
+{
+    if (m_objectsCount == newObjectsCount)
+        return;
+    m_objectsCount = newObjectsCount;
+    emit objectsCountChanged();
 }

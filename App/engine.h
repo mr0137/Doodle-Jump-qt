@@ -22,6 +22,7 @@ public:
 
     void addControllerFactories(const QList<ControllerFactory *> *value);
     void addCollideControllerFactories(const QList<ControllerFactory *> *value);
+    void addProceeder(std::function<void()> proceeder);
 
 private:
     SetModeEngineMsgAns proceedSetEngineModeMsg(SetModeEngineMsg msg);
@@ -32,6 +33,7 @@ private:
 private:
     QHash<QString, ControllerFactory*> m_objectControllerFactories;
     QHash<QString, ControllerFactory*> m_collideControllerFactories;
+    QList<std::function<void()>> m_proceeders;
     QFuture<void> future;
     QFuture<void> m_interfaceProceeder;
     bool working = true;

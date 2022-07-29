@@ -12,6 +12,9 @@ AppCore::AppCore(QObject *parent)
 {
     m_scene->setEngineInterface(m_engine->getInterface());
     m_scene->setKeyNegotiator(m_keyNegotiator);
+    //m_engine->addProceeder([this](){
+    //    m_scene->updateItems();
+    //});
 
     connect(m_scene, &Scene::viewRectChanged, this, [this]()
     {

@@ -6,8 +6,23 @@
 #include <functional>
 #include "abstractobjectcontroller.h"
 #include "core_global.h"
-
+#include <QFile>
+#include <QRandomGenerator>
+#include <random>
 class EngineInterface;
+
+class CORE_EXPORT HashGenerator{
+public:
+    HashGenerator(){};
+    void setSeed(uint32_t seed) { m_seed = QString::number(seed); }
+    quint32 generate(){
+        m_seed = QString::number(hashl(m_seed.toStdString()));
+        return m_seed.midRef(0,m_seed.length()/2).toUInt();
+    }
+private:
+    QString m_seed;
+    std::hash<std::string> hashl;
+};
 
 class CORE_EXPORT LevelGenerator
 {
@@ -21,6 +36,7 @@ public:
     void setDeleteHandler(const std::function<bool(uint32_t)> &deleteHandler);
 private:
     void createObject(QString type, QPointF pos);
+
 private:
     std::function<uint32_t(QString type, QPointF)> m_createHandler = nullptr;
     std::function<bool(uint32_t)> m_deleteHandler = nullptr;
@@ -30,6 +46,15 @@ private:
     QList<AbstractObjectController*> m_creatablePowerUPObjects;
 
     QMap<uint32_t, AbstractObjectController*> m_createdControllers;
+    int64_t m_offset = 0;
+    QRandomGenerator m_generatorY;
+    QRandomGenerator m_generatorX;
+    bool m_inited = false;
+    int m_maxY = 0;
+    QMap<int, double> m_idHeights;
+    HashGenerator m_randomX;
+    HashGenerator m_randomY;
+    QFile* m_file;
 };
 
 #endif // LEVELGENERATOR_H

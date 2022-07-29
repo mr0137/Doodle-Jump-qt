@@ -1,34 +1,58 @@
 #include "levelgenerator.h"
 #include "engineinterface.h"
+#include "qrandom.h"
+#include <QDateTime>
 
 LevelGenerator::LevelGenerator()
 {
-
+    m_randomX.setSeed(0137);
+    m_randomY.setSeed(0137);
 }
 
 LevelGenerator::~LevelGenerator()
 {
-
+    m_file->close();
 }
 
 void LevelGenerator::proceed(const QRectF &visualRect)
 {
-    static int i = 0;
-    if (i++ == 0)
+    if (!m_inited)
     {
+        createObject("Doodler", {424, 667});
+        m_inited = true;
         for (int i = 0; i < 8; i++)
         {
-            if (i == -1)
-            {
-                createObject("SlabVMoving", {i * 100 + 8.3 * i, 30});
-            }
-            else
-            {
-                createObject("Slab", {i * 100 + 8.3 * i, 30});
-                createObject("Slab", {200., i * 400.});
-            }
+            createObject("Slab", {i * 100 + 8.3 * i, 30});
         }
-        createObject("Doodler", {424, 667});
+        m_maxY = 30;
+    }
+    uint64_t gap = 120;
+    if (m_offset + gap < visualRect.y())
+    {
+        m_offset += gap;
+        int x = m_randomX.generate()%(static_cast<int>(visualRect.width()) - 100);
+        int y = 0;
+        int r = 0;
+        do
+        {
+            y = m_randomY.generate()%static_cast<int>(visualRect.height()) + m_offset;
+            r = sqrt(pow(m_maxY - y,2) + pow(x - x, 2));
+        }while (r > 600 && y > m_maxY);
+
+        if (y > m_maxY)
+        {
+            m_maxY = y;
+        }
+        //TODO different objects spawn due to percentage
+        createObject("Slab", QPointF(x, y));
+    }
+
+    for (const auto key : m_idHeights.keys())
+    {
+        if (m_idHeights[key] < m_offset - visualRect.height() - 100)
+        {
+            m_deleteHandler(key);
+        }
     }
 }
 
@@ -81,5 +105,9 @@ void LevelGenerator::setDeleteHandler(const std::function<bool(uint32_t)> &delet
 
 void LevelGenerator::createObject(QString type, QPointF pos)
 {
-    m_createHandler(type, pos);
+    uint32_t id = m_createHandler(type, pos);
+    if (m_inited)
+    {
+        m_idHeights[id] = pos.y();
+    }
 }

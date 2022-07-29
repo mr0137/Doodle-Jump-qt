@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QSurfaceFormat>
 #include <appcore.h>
 #include "engine.h"
 #include <QtQml>
@@ -11,9 +12,12 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    //qmlRegisterSingletonType("App", 1, 0, "AppCore", [](QQmlEngine *engine, QJSEngine *scriptEngineBase) -> QObject* { return AppCore::qmlInstance(engine, scriptEngineBase);});
-    //qmlRegisterUncreatableType("App", 1, 0, "AppCore", "Singleton");
-    qmlRegisterSingletonInstance("App", 1, 0, "AppCore", AppCore::getInstance());
+    //disables vsync for any QtQuick windows we create (BUG 406180)
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+    format.setSwapInterval(0);
+    QSurfaceFormat::setDefaultFormat(format);
+
+    qmlRegisterSingletonInstance<AppCore>("App", 1, 0, "AppCore", AppCore::getInstance());
     qmlRegisterUncreatableType<Scene>("App", 1, 0, "Scene", "one instance per programm");
     qmlRegisterType<SceneView>("App", 1, 0, "SceneView");
 

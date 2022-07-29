@@ -2,6 +2,7 @@
 #include "engineinterface.h"
 
 #include <QRectF>
+#include <QThread>
 
 static inline bool containsType(int type, int sequance)
 {
@@ -73,23 +74,24 @@ void EngineBase::proceed(int uSecond, int dt)
         //proceed physical items
         for (auto c : m_objectControllers)
         {
-            c.second->proceed(1000, m_visualRect);
+            c->proceed(1000, m_visualRect);
         }
 
         for (auto d : m_collideObjectControllers)
         {
             for (auto c : m_objectControllers)
             {
-                if (containsType(static_cast<int>(c.second->getControllerType()), d.second->getCollidableTypes()))
+                if (containsType(static_cast<int>(c->getControllerType()), d->getCollidableTypes()))
                 {
-                    m_collisionDetector->proceed(d.second, c.second);
+                    m_collisionDetector->proceed(d, c);
                 }
             }
-            d.second->proceed(1000, m_visualRect);
+            d->proceed(1000, m_visualRect);
         }
 
         m_engineTime += 1000; // uSecond
         prevTime_us = uSecond;
+        //QThread::msleep(10);
     }
 }
 
@@ -97,11 +99,11 @@ void EngineBase::insertController(uint32_t id, AbstractObjectController * c)
 {
     if (c->getControllerType() == ControllerType::BULLET || c->getControllerType() == ControllerType::DOODLER)
     {
-        m_collideObjectControllers.emplace(id, c);
+        m_collideObjectControllers.insert(id, c);
     }
     else
     {
-        m_objectControllers.emplace(id, c);
+        m_objectControllers.insert(id, c);
     }
 }
 
@@ -113,7 +115,7 @@ bool EngineBase::removeController(uint32_t id)
         return false;
     }
 
-    delete iter->second;
+    delete iter.value();
     m_objectControllers.erase(iter);
 
     return true;
@@ -121,27 +123,22 @@ bool EngineBase::removeController(uint32_t id)
 
 QByteArray EngineBase::proceedItemMsg(MessageHeader header, QDataStream &s)
 {
-    for (auto c : m_objectControllers)
+    for (const auto c : qAsConst(m_objectControllers))
     {
-        if (c.second->getPiId() == header.itemId)
+        if (c->getPiId() == header.itemId)
         {
-            return c.second->proceedMsg(&header, s);
+            return c->proceedMsg(&header, s);
         }
     }
 
-    for (auto c : m_collideObjectControllers)
+    for (const auto c : qAsConst(m_collideObjectControllers))
     {
-        if (c.second->getPiId() == header.itemId)
+        if (c->getPiId() == header.itemId)
         {
-            return c.second->proceedMsg(&header, s);
+            return c->proceedMsg(&header, s);
         }
     }
     return nullptr;
-}
-
-const std::map<uint32_t, AbstractObjectController *> *EngineBase::getPiControllers()
-{
-    return &m_objectControllers;
 }
 
 unsigned long long EngineBase::engineTime() const

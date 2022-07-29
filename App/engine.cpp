@@ -51,6 +51,10 @@ void Engine::start()
         while (this->working)
         {
             m_interface->proceed();
+            for (const auto &proceeder : qAsConst(m_proceeders))
+            {
+                proceeder();
+            }
         }
     });
 }
@@ -76,6 +80,11 @@ void Engine::addCollideControllerFactories(const QList<ControllerFactory *> *val
     {
         m_collideControllerFactories.insert(controller->type(), controller);
     }
+}
+
+void Engine::addProceeder(std::function<void ()> proceeder)
+{
+    m_proceeders.push_back(proceeder);
 }
 
 //CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
@@ -118,7 +127,7 @@ SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
     {
         for (auto p : m_objectControllers)
         {
-            delete p.second;
+            delete p;
         }
         m_objectControllers.clear();
         m_lastCreatedPIID = -1;
@@ -162,7 +171,7 @@ uint32_t Engine::createObject(QString type, QPointF pos)
     msg.id = m_lastCreatedPIID;
     m_interface->sendFromEngine(msg, m_lastCreatedPIID);
 
-    qDebug() << "Engine" << msg.id;
+    //qDebug() << "Engine create" << msg.id;
 
     return m_lastCreatedPIID;
 }
@@ -170,6 +179,24 @@ uint32_t Engine::createObject(QString type, QPointF pos)
 bool Engine::deleteObject(uint32_t id)
 {
     //TODO add removing
-    return false;
+    RemoveItemMessage msg;
+    msg.ids = {id};
+    if (m_collideObjectControllers.contains(id))
+    {
+        delete m_collideObjectControllers[id];
+        m_collideObjectControllers.remove(id);
+    }
+    else if (m_objectControllers.contains(id))
+    {
+        delete m_objectControllers[id];
+        m_objectControllers.remove(id);
+    }
+    else
+    {
+        return false;
+    }
+    //qDebug() << "Engine delete" << id;
+    m_interface->sendFromEngine(msg, id);
+    return true;
 }
 
