@@ -4,7 +4,7 @@
 #include <enginebase.h>
 #include <engineinterface.h>
 
-SlabController::SlabController()
+SlabController::SlabController() : AbstractObjectController()
 {
     m_boundingRect = {0, 0, 100, 30};
 }

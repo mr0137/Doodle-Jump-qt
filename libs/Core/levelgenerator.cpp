@@ -20,7 +20,7 @@ void LevelGenerator::proceed(const QRectF &visualRect)
     {
         createObject("Doodler", {424, 667});
         m_inited = true;
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 7; i++)
         {
             createObject("Slab", {i * 100 + 8.3 * i, 30});
         }
@@ -30,6 +30,8 @@ void LevelGenerator::proceed(const QRectF &visualRect)
     if (m_offset + gap < visualRect.y())
     {
         m_offset += gap;
+        //! TODO generation without viewRect width (width might be around 8 platforms + 7 spices = 835
+        //! if real width would be bigger -> scale all objects
         int x = m_randomX.generate()%(static_cast<int>(visualRect.width()) - 100);
         int y = 0;
         int r = 0;
@@ -49,7 +51,7 @@ void LevelGenerator::proceed(const QRectF &visualRect)
 
     for (const auto key : m_idHeights.keys())
     {
-        if (m_idHeights[key] < m_offset - visualRect.height() - 100)
+        if (m_idHeights[key] < m_offset - visualRect.height() * 2)
         {
             m_deleteHandler(key);
         }

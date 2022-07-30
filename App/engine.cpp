@@ -6,10 +6,11 @@
 
 using namespace std::chrono_literals;
 
-Engine::Engine(QObject *parent) : QObject(parent)
+Engine::Engine(QObject *parent) : QObject(parent), EngineBase()
 {
     m_lastCreatedPIID = 0;
     messageNegotiator->registerMsgHandler(&Engine::proceedSetEngineModeMsg, this);
+    messageNegotiator->registerMsgHandler(&Engine::proceedChangeViewRectMsg, this);
 
     m_levelGenerator->setCreateHandler([this](QString name, QPointF pos){
        return createObject(name, pos);
@@ -22,15 +23,15 @@ Engine::Engine(QObject *parent) : QObject(parent)
 
 Engine::~Engine()
 {
-    future.cancel();
+    m_engineThread.cancel();
     m_interfaceProceeder.cancel();
     m_interfaceProceeder.waitForFinished();
-    future.waitForFinished();
+    m_engineThread.waitForFinished();
 }
 
 void Engine::start()
 {
-    future = QtConcurrent::run([this](){
+    m_engineThread = QtConcurrent::run([this](){
         const int delay = 1000; // microsec
         auto start = std::chrono::system_clock::now();
         auto last = std::chrono::system_clock::now();
@@ -46,7 +47,7 @@ void Engine::start()
             }
         }
     });
-
+    //
     m_interfaceProceeder = QtConcurrent::run([this](){
         while (this->working)
         {
@@ -62,8 +63,10 @@ void Engine::start()
 void Engine::stop()
 {
     working = false;
-    future.cancel();
-    future.waitForFinished();
+    m_interfaceProceeder.cancel();
+    m_engineThread.cancel();
+    m_engineThread.waitForFinished();
+    m_interfaceProceeder.waitForFinished();
 }
 
 void Engine::addControllerFactories(const QList<ControllerFactory *> *value)
@@ -86,30 +89,6 @@ void Engine::addProceeder(std::function<void ()> proceeder)
 {
     m_proceeders.push_back(proceeder);
 }
-
-//CreateItemMsgAns Engine::proceedCreateItemMsg(CreateItemMsg msg)
-//{
-//    QString type = msg.objectType;
-//
-//    CreateItemMsgAns answ;
-//    answ.objectType = msg.objectType;
-//    answ.id = createObject(type, QPointF{msg.x, msg.y});
-//    qDebug() << msg.objectType << m_lastCreatedPIID;
-//    return answ;
-//}
-//
-//RemoveItemMessageAns Engine::proceedRemoveItemMsg(RemoveItemMessage msg)
-//{
-//    RemoveItemMessageAns ans;
-//    for (uint32_t id : msg.ids) {
-//        if(!removeController(id)) {
-//            ans.success = false;
-//            return ans;
-//        }
-//    }
-//    ans.success = true;
-//    return ans;
-//}
 
 SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
 {
@@ -137,6 +116,14 @@ SetModeEngineMsgAns Engine::proceedSetEngineModeMsg(SetModeEngineMsg msg)
     msgAnswer.modeChangedSuccess = true;
     msgAnswer.mode = msg.mode;
     return msgAnswer;
+}
+
+ChangeViewRectMsgAns Engine::proceedChangeViewRectMsg(ChangeViewRectMsg msg)
+{
+    setViewRect(msg.viewRect);
+    ChangeViewRectMsgAns ans;
+    ans.success = true;
+    return ans;
 }
 
 uint32_t Engine::createObject(QString type, QPointF pos)
@@ -178,7 +165,6 @@ uint32_t Engine::createObject(QString type, QPointF pos)
 
 bool Engine::deleteObject(uint32_t id)
 {
-    //TODO add removing
     RemoveItemMessage msg;
     msg.ids = {id};
     if (m_collideObjectControllers.contains(id))

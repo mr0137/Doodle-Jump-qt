@@ -15,7 +15,7 @@ struct PLUGINSBASE_EXPORT ChangeViewRectMsg : IMessage
     void deserialize(QDataStream *) override;
 
 public:
-    double y;
+    QRectF viewRect;
 
 private:
     const static uint32_t m_messageType = 13;

@@ -21,7 +21,7 @@ public:
 
     EngineInterface *getInterface() const;
     LevelGenerator *getLevelGenerator() const;
-    void setVisualRect(QRectF rect);
+    void setViewRect(QRectF rect);
 
     virtual void start() = 0;
     virtual void stop() = 0;
@@ -43,7 +43,7 @@ protected:
     LevelGenerator* m_levelGenerator = nullptr;
     CollisionDetector* m_collisionDetector = nullptr;
     bool doMath = false;
-    QRectF m_visualRect;
+    QRectF m_viewRect;
 
 private:
     int prevTime_us = 0;

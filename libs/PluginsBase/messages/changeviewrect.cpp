@@ -2,12 +2,12 @@
 
 void ChangeViewRectMsg::serialize(QDataStream *s) const
 {
-    *s << y;
+    *s << viewRect;
 }
 
 void ChangeViewRectMsg::deserialize(QDataStream * s)
 {
-    *s >> y;
+    *s >> viewRect;
 }
 
 void ChangeViewRectMsgAns::serialize(QDataStream * s) const

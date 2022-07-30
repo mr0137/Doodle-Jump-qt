@@ -4,7 +4,7 @@
 #include <messages/changeviewrect.h>
 #include <engineinterface.h>
 
-DoodlerController::DoodlerController()
+DoodlerController::DoodlerController() : AbstractObjectController()
 {
     m_boundingRect = {0,0,50,50};
     m_collidableTypes = (static_cast<int>(ControllerType::SLAB) | static_cast<int>(ControllerType::MONSTER) | static_cast<int>(ControllerType::POWERUP) | static_cast<int>(ControllerType::TRAP));

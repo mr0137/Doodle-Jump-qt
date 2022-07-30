@@ -11,17 +11,16 @@
 #include <random>
 class EngineInterface;
 
-class CORE_EXPORT HashGenerator{
+class CORE_EXPORT RandGenerator{
 public:
-    HashGenerator(){};
     void setSeed(uint32_t seed) { m_seed = QString::number(seed); }
-    quint32 generate(){
-        m_seed = QString::number(hashl(m_seed.toStdString()));
+    quint32 generate()
+    {
+        m_seed = QString::number(std::hash<std::string>{}(m_seed.toStdString()));
         return m_seed.midRef(0,m_seed.length()/2).toUInt();
     }
 private:
     QString m_seed;
-    std::hash<std::string> hashl;
 };
 
 class CORE_EXPORT LevelGenerator
@@ -52,8 +51,8 @@ private:
     bool m_inited = false;
     int m_maxY = 0;
     QMap<int, double> m_idHeights;
-    HashGenerator m_randomX;
-    HashGenerator m_randomY;
+    RandGenerator m_randomX;
+    RandGenerator m_randomY;
     QFile* m_file;
 };
 

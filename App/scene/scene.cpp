@@ -123,10 +123,10 @@ void Scene::setKeyNegotiator(KeyNegotiator *keyNegotiator)
 
 void Scene::startTest()
 {
-    m_timer->start(20);
+    m_timer->start(100);
     SetModeEngineMsg startEngineMsg;
     startEngineMsg.mode = EngineMode::START;
-    m_engineInterface->sendToEngine(startEngineMsg).onCompleted<SetModeEngineMsgAns>([this](const SetModeEngineMsgAns & ans){
+    m_engineInterface->sendToEngine(startEngineMsg).onCompleted<SetModeEngineMsgAns>([](const SetModeEngineMsgAns & ans){
         qDebug() << ":start" << ans.modeChangedSuccess;
     });
 }
@@ -156,9 +156,9 @@ SceneItem *Scene::addItem(QPoint pos, QString objectType, uint32_t id, QVariantM
         item->setObjectName(objectType);
         //item->setParent(this);
         item->setId(id);
-        //qDebug() << id;
 
         m_sceneItemsRegistry[id] = item;
+        qDebug() << "Scene create:" << item->id();
         m_sceneItems.push_back(item);
         setObjectsCount(m_sceneItems.count());
     }
@@ -175,7 +175,7 @@ void Scene::removeItem(SceneItem *item)
     if (item != nullptr)
     {
         m_sceneItems.removeAll(item);
-        //qDebug() << "Scene remove:" << item->id();
+        qDebug() << "Scene remove:" << item->id();
         delete item;
         setObjectsCount(m_sceneItems.count());
     }
@@ -186,6 +186,7 @@ void Scene::updateItems()
     QMutexLocker locker(&m_mutex);
     for (int i = m_sceneItems.length() - 1; i >= 0  ; i--)
     {
+        //! Cannot set parent for item from another thread
         //if (m_sceneItems[i]->parent() == nullptr)
         //{
         //    m_sceneItems[i]->moveToThread(QThread::currentThread());
@@ -222,6 +223,12 @@ void Scene::setViewRect(const QRectF &newViewRect)
     if (m_viewRect == newViewRect)
         return;
     m_viewRect = newViewRect;
+    if (m_engineInterface)
+    {
+        ChangeViewRectMsg msg;
+        msg.viewRect = m_viewRect;
+        m_engineInterface->sendToEngine(msg);
+    }
     emit viewRectChanged(m_viewRect);
 }
 
