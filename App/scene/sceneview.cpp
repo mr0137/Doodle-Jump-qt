@@ -1,5 +1,6 @@
 #include "sceneview.h"
 #include "scene/background/backgroundnoise.h"
+#include <cmath>
 #include <scene/background/backgroundgrid.h>
 #include <QPainter>
 #include <QSGSimpleTextureNode>

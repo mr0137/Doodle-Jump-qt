@@ -17,6 +17,14 @@ EngineBase::EngineBase()
     m_levelGenerator = new LevelGenerator();
     m_collisionDetector = new CollisionDetector();
 
+    m_levelGenerator->setBoundingRectGetter([this](QString type) -> QRectF{
+        if (m_controllersBoundingRect.contains(type + "Controller"))
+        {
+            return m_controllersBoundingRect[type + "Controller"];
+        }
+        return {};
+    });
+
     doMath = false;
 }
 
@@ -79,7 +87,7 @@ void EngineBase::proceed(int uSecond, int dt)
 
         for (auto d : m_collideObjectControllers)
         {
-            for (auto c : m_objectControllers)
+            for (auto c : qAsConst(m_objectControllers))
             {
                 if (containsType(static_cast<int>(c->getControllerType()), d->getCollidableTypes()))
                 {
@@ -91,11 +99,10 @@ void EngineBase::proceed(int uSecond, int dt)
 
         m_engineTime += 1000; // uSecond
         prevTime_us = uSecond;
-        //QThread::msleep(10);
     }
 }
 
-void EngineBase::insertController(uint32_t id, AbstractObjectController * c)
+void EngineBase::insertController(uint32_t id, AbstractObjectController* c)
 {
     if (c->getControllerType() == ControllerType::BULLET || c->getControllerType() == ControllerType::DOODLER)
     {

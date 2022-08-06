@@ -18,7 +18,7 @@ void LevelGenerator::proceed(const QRectF &visualRect)
 {
     if (!m_inited)
     {
-        createObject("Doodler", {424, 667});
+        createObject("Doodler", {424, 337});
         m_inited = true;
         for (int i = 0; i < 7; i++)
         {
@@ -35,23 +35,41 @@ void LevelGenerator::proceed(const QRectF &visualRect)
         int x = m_randomX.generate()%(static_cast<int>(visualRect.width()) - 100);
         int y = 0;
         int r = 0;
+        bool intersects = false;
         do
         {
             y = m_randomY.generate()%static_cast<int>(visualRect.height()) + m_offset;
             r = sqrt(pow(m_maxY - y,2) + pow(x - x, 2));
-        }while (r > 600 && y > m_maxY);
+            if (r <= 490 || y <= m_maxY)
+            {
+                intersects = false;
+                QRect createdObjectRect(x, y, m_boundingRectGetter("Slab").width(), m_boundingRectGetter("Slab").height());
+                for (const auto &obj : qAsConst(m_objects))
+                {
+                    QRect objRect(obj.xPos, obj.yPos, obj.boundingRect.width(), obj.boundingRect.height());
+                    if (createdObjectRect.intersects(objRect) || objRect.intersects(createdObjectRect))
+                    {
+                        //intersects = true;
+                        y += 40;
+                        qDebug() << "intersects" << createdObjectRect << QRect(obj.xPos, obj.yPos, obj.boundingRect.width(), obj.boundingRect.height());
+                        break;
+                    }
+                }
+            }
+        }while ((r > 490 || intersects) && y > m_maxY);
 
         if (y > m_maxY)
         {
             m_maxY = y;
         }
+        qDebug() << QPointF(x, y);
         //TODO different objects spawn due to percentage
         createObject("Slab", QPointF(x, y));
     }
 
-    for (const auto key : m_idHeights.keys())
+    for (const auto &key : m_objects.keys())
     {
-        if (m_idHeights[key] < m_offset - visualRect.height() * 2)
+        if (m_objects[key].yPos < m_offset - visualRect.height() * 2)
         {
             m_deleteHandler(key);
         }
@@ -79,12 +97,12 @@ void LevelGenerator::addGenerateableObjectsTypes(AbstractObjectController *objec
     }
     case ControllerType::GHOST:
     {
-        qDebug() << "Cannot add Doodler to levelGenerator";
+        qDebug() << "Cannot add GHOST to levelGenerator";
         return;
     }
     case ControllerType::BULLET:
     {
-        qDebug() << "Cannot add Doodler to levelGenerator";
+        qDebug() << "Cannot add BULLET to levelGenerator";
         return;
     }
     case ControllerType::POWERUP:
@@ -105,11 +123,16 @@ void LevelGenerator::setDeleteHandler(const std::function<bool(uint32_t)> &delet
     m_deleteHandler = deleteHandler;
 }
 
+void LevelGenerator::setBoundingRectGetter(const std::function<QRectF (QString)> &boundingRectGetter)
+{
+    m_boundingRectGetter = boundingRectGetter;
+}
+
 void LevelGenerator::createObject(QString type, QPointF pos)
 {
     uint32_t id = m_createHandler(type, pos);
     if (m_inited)
     {
-        m_idHeights[id] = pos.y();
+        m_objects[id] = {pos.x(), pos.y(), m_boundingRectGetter(type)};
     }
 }

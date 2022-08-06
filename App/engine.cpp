@@ -74,6 +74,10 @@ void Engine::addControllerFactories(const QList<ControllerFactory *> *value)
     for (auto* controller : *value)
     {
         m_objectControllerFactories.insert(controller->type(), controller);
+        //getting controller baunding rect
+        auto instance = controller->create();
+        m_controllersBoundingRect.insert(controller->type(), instance->getBoundingRect());
+        delete instance;
     }
 }
 
@@ -82,6 +86,10 @@ void Engine::addCollideControllerFactories(const QList<ControllerFactory *> *val
     for (auto* controller : *value)
     {
         m_collideControllerFactories.insert(controller->type(), controller);
+        //getting controller baunding rect
+        auto instance = controller->create();
+        m_controllersBoundingRect.insert(controller->type(), instance->getBoundingRect());
+        delete instance;
     }
 }
 

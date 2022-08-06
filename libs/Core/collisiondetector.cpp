@@ -13,7 +13,7 @@ void CollisionDetector::proceed(AbstractObjectController *targetController, Abst
     {
         QRectF targetRect = targetController->getBoundingRect();
         QRectF objectRect = object->getBoundingRect();
-        if (targetRect.y() - targetRect.height() <= objectRect.y() && targetRect.y() - targetRect.height() >= objectRect.y() - objectRect.height() * 0.2)
+        if (targetRect.y() - targetRect.height() <= objectRect.y() && targetRect.y() - targetRect.height() >= objectRect.y() - objectRect.height() * 0.5)
         {
             if (targetRect.x() <= objectRect.x() + objectRect.width() && targetRect.x() + targetRect.width() >= objectRect.x())
             {

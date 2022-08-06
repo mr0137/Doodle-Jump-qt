@@ -38,6 +38,7 @@ protected:
     uint32_t m_lastCreatedPIID = 0;
     QMap<uint32_t, AbstractObjectController*> m_objectControllers;
     QMap<uint32_t, AbstractObjectController*> m_collideObjectControllers;
+    QMap<QString, QRectF> m_controllersBoundingRect;
     MessageNegotiator* messageNegotiator = nullptr;
     EngineInterface* m_interface = nullptr;
     LevelGenerator* m_levelGenerator = nullptr;

@@ -6,11 +6,25 @@
 #include <QtQml>
 #include <scene/sceneview.h>
 
+static int jj = 0;
+double rec(double y, double delta)
+{   jj++;
+    if (y <= 0)
+    {
+        return delta;
+    }
+    delta += 0.0000098 * 1000;
+    return rec(y - delta, delta);
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+
+    auto res = rec(400.644, 0);
+    qDebug() << jj << res;
 
     //disables vsync for any QtQuick windows we create (BUG 406180)
     QSurfaceFormat format = QSurfaceFormat::defaultFormat();
