@@ -62,7 +62,6 @@ void SlabHMovingController::proceed(double dt, QRectF &visualRect)
         msg.y = m_boundingRect.y();
 
         m_engine->getInterface()->sendFromEngine(msg, m_id);
-
     }
 }
 
@@ -74,4 +73,11 @@ void SlabHMovingController::init(QPointF startPoint)
 
     m_internalVelocity = velocity;
     m_inited = true;
+}
+
+void SlabHMovingController::setViewRect(QRectF &viewRect)
+{
+    m_viewRect = viewRect;
+    left = 10;
+    right = viewRect.width() - 110;
 }

@@ -7,16 +7,22 @@ class SlabVMovingController : public SlabController
 {
 public:
     SlabVMovingController();
-    virtual void proceed(double dt, QRectF & visualRect) override;
-    virtual void init(QPointF startPoint) override;
+    void proceed(double dt, QRectF & visualRect) override;
+    void init(QPointF startPoint) override;
+
+    bool needInitWithRandomValue() override;
+    double getRangeFrom() override;
+    double getRangeTo() override;
+    void setRandomValue(double value) override;
+    void setViewRect(QRectF &viewRect) override;
 
 private:
     bool m_inited = false;
-    qreal top = 100;
-    qreal bottom = 1200;
+    qreal top = 0;
+    qreal bottom = 0;
     qreal speed = 1.5;
-    qreal velocity = 50;
-    qreal m_internalVelocity;
+    qreal velocity = 45;
+    qreal m_internalVelocity = 0;
     enum MovingMode{
         NONE = 0x00,
         UP = 0x01,
@@ -26,6 +32,8 @@ private:
     };
     Q_DECLARE_FLAGS(MovingModes, MovingMode)
     MovingModes mode;
+
+    QRectF m_viewRect;
 };
 
 #endif // SLABVMOVINGCONTROLLER_H

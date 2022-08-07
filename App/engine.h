@@ -38,6 +38,7 @@ private:
     QList<std::function<void()>> m_proceeders;
     QFuture<void> m_engineThread;
     QFuture<void> m_interfaceProceeder;
+    RandomGenerator m_generator;
     bool working = true;
 };
 

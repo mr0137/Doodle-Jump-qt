@@ -30,5 +30,6 @@ HEADERS += \
     levelgenerator.h \
     messageanswerdispatcher.h \
     messageheader.h \
-    messagenegotiator.h
+    messagenegotiator.h \
+    randomgenerator.h
 

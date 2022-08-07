@@ -7,6 +7,7 @@ LevelGenerator::LevelGenerator()
 {
     m_randomX.setSeed(0137);
     m_randomY.setSeed(0137);
+    m_randomType.setSeed(0137);
 }
 
 LevelGenerator::~LevelGenerator()
@@ -43,20 +44,20 @@ void LevelGenerator::proceed(const QRectF &visualRect)
             if (r <= 490 || y <= m_maxY)
             {
                 intersects = false;
-                QRect createdObjectRect(x, y, m_boundingRectGetter("Slab").width(), m_boundingRectGetter("Slab").height());
+                QRect createdObjectRect(x + 5, y + 5, m_boundingRectGetter("Slab").width() + 10, m_boundingRectGetter("Slab").height() + 10);
                 for (const auto &obj : qAsConst(m_objects))
                 {
-                    QRect objRect(obj.xPos, obj.yPos, obj.boundingRect.width(), obj.boundingRect.height());
+                    QRect objRect(obj.xPos + 5, obj.yPos + 5, obj.boundingRect.width() + 10, obj.boundingRect.height() + 10);
                     if (createdObjectRect.intersects(objRect) || objRect.intersects(createdObjectRect))
                     {
-                        //intersects = true;
-                        y += 40;
+                        intersects = true;
+                        //y += 40;
                         qDebug() << "intersects" << createdObjectRect << QRect(obj.xPos, obj.yPos, obj.boundingRect.width(), obj.boundingRect.height());
                         break;
                     }
                 }
             }
-        }while ((r > 490 || intersects) && y > m_maxY);
+        }while ((r > 490 && y > m_maxY) || intersects);
 
         if (y > m_maxY)
         {
@@ -64,7 +65,18 @@ void LevelGenerator::proceed(const QRectF &visualRect)
         }
         qDebug() << QPointF(x, y);
         //TODO different objects spawn due to percentage
-        createObject("Slab", QPointF(x, y));
+        if (m_randomType.generate()%23==0)
+        {
+            createObject("SlabVMoving", QPointF(x, y));
+        }
+        else if (m_randomType.generate()%23==0)
+        {
+            createObject("SlabHMoving", QPointF(x, y));
+        }
+        else
+        {
+            createObject("Slab", QPointF(x, y));
+        }
     }
 
     for (const auto &key : m_objects.keys())

@@ -6,22 +6,10 @@
 #include <functional>
 #include "abstractobjectcontroller.h"
 #include "core_global.h"
+#include "randomgenerator.h"
 #include <QFile>
 
 class EngineInterface;
-
-class CORE_EXPORT RandGenerator
-{
-public:
-    void setSeed(uint32_t seed) { m_seed = QString::number(seed); }
-    quint32 generate()
-    {
-        m_seed = QString::number(std::hash<std::string>{}(m_seed.toStdString()));
-        return m_seed.midRef(0,m_seed.length()/2).toUInt();
-    }
-private:
-    QString m_seed;
-};
 
 struct CORE_EXPORT ObjectData
 {
@@ -58,8 +46,9 @@ private:
     int64_t m_offset = 0;
     bool m_inited = false;
     int m_maxY = 0;
-    RandGenerator m_randomX;
-    RandGenerator m_randomY;
+    RandomGenerator m_randomX;
+    RandomGenerator m_randomY;
+    RandomGenerator m_randomType;
     QFile* m_file;
 };
 

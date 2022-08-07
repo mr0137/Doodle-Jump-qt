@@ -36,6 +36,7 @@ public:
     virtual double getRangeFrom() { return 0; }
     virtual double getRangeTo() { return 0; }
     virtual void setRandomValue(double value) { Q_UNUSED(value) }
+    virtual void setViewRect(QRectF &viewRect) {  Q_UNUSED(viewRect) }
 
     QByteArray proceedMsg(MessageHeader *header, QDataStream &stream);
 

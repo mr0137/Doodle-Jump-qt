@@ -3,7 +3,6 @@
 
 #include "abstractobjectcontroller.h"
 #include <messages/setvelocitymsg.h>
-#include <QEasingCurve>
 
 class DoodlerController : public AbstractObjectController
 {
@@ -16,14 +15,13 @@ public:
 
 private:
     SetVelocityMsgAns proceedSetVelocity(SetVelocityMsg msg);
+    double getVelocityByHeight(double height, double delta = 0);
 
 private:
     double m_delta = 0.000009;
     double m_velocityMult = 1;
     bool m_moving = false;
     double m_jumpHeight = 505;
-    bool m_jumping = true;
-    QEasingCurve* m_easing = nullptr;
     double m_easingProgress = 0;
     double m_yBeforeJump = 0;
 };

@@ -19,6 +19,7 @@ Engine::Engine(QObject *parent) : QObject(parent), EngineBase()
     m_levelGenerator->setDeleteHandler([this](uint32_t id){
         return deleteObject(id);
     });
+    m_generator.setSeed(0137);
 }
 
 Engine::~Engine()
@@ -153,6 +154,16 @@ uint32_t Engine::createObject(QString type, QPointF pos)
     m_lastCreatedPIID++;
     controller->setPiId(m_lastCreatedPIID);
     controller->setEngineBase(this);
+    controller->setViewRect(m_viewRect);
+
+    while(controller->needInitWithRandomValue())
+    {
+        double topValue = controller->getRangeTo();
+        double bottomValue = controller->getRangeFrom();
+
+        controller->setRandomValue(m_generator.generate()%static_cast<int>(topValue-bottomValue)+bottomValue);
+    }
+
     controller->init(pos);
 
     insertController(m_lastCreatedPIID, controller);
